@@ -1,0 +1,27 @@
+{
+  "name": "safebox",
+  "version": "1.0.0",
+  "description": "A safe and secure server side state solution",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/stevecode/safebox.git"
+  },
+  "author": "Sivan Shani",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/stevecode/safebox#readme",
+  "devDependencies": {
+    "@types/node": "^12.11.2",
+    "@typescript-eslint/eslint-plugin": "^2.5.0",
+    "@typescript-eslint/parser": "^2.5.0",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "typescript": "^3.6.4"
+  }
+}
