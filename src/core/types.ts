@@ -1,31 +1,34 @@
 import {JSONSchema4} from "json-schema";
 
-export enum Permission {
+// Global Types
 
-}
+export type Path = string[];
 
-export enum AccessType {
+// Permissions
+
+export enum PermissionRequestType {
   READ,
   WRITE
 }
 
-export enum AccessPermit {
-  ACCEPT,
-  DENY
+export enum PathPermissionType {
+  READ,
+  WRITE,
+  NO_READ,
+  NO_WRITE
 }
 
 export interface PathPermission {
   path: Path,
-  accessType: AccessType,
-  accessPermit: AccessPermit
+  pathPermissionTypes: Set<PathPermissionType>
 }
-
-export type Path = string[];
 
 
 export interface SafeboxConfiguration {
   schema: JSONSchema4
 }
+
+// Safebox Types
 
 export enum AccessStatusCode {
   SUCCESS,
