@@ -6,21 +6,21 @@ export type Path = string[];
 
 // Permissions
 
-export enum PermissionRequestType {
-  READ,
-  WRITE
+export enum PathAction {
+  GET,
+  SET
 }
 
-export enum PathPermissionType {
-  READ,
-  WRITE,
-  NO_READ,
-  NO_WRITE
+export enum PathPermission {
+  CAN_GET,
+  CAN_SET,
+  NO_GET,
+  NO_SET
 }
 
-export interface PathPermission {
+export interface PathPermissionSetting {
   path: Path,
-  pathPermissionTypes: Set<PathPermissionType>
+  pathPermissionTypes: Set<PathPermission>
 }
 
 

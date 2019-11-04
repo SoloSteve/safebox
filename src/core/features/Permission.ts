@@ -1,60 +1,83 @@
-import {set} from "lodash";
+import {get, isObjectLike, set} from "lodash";
 import {flatten} from 'flat';
-import {Path, PathPermission, PathPermissionType, PermissionRequestType} from "../types";
+import {Path, PathAction, PathPermission, PathPermissionSetting} from "../types";
 
 export default class Permission {
-  private static PermissionTypesKey = Symbol();
+  private static PERMISSIONS_KEY = Symbol('PERMISSIONS_KEY');
   private readonly permissionTree: any;
 
-  constructor(permissions: PathPermission[]) {
+  constructor(permissions: PathPermissionSetting[]) {
     this.permissionTree = {};
     permissions.forEach(this.addPermission.bind(this));
   }
 
-  addPermission(permission: PathPermission): void {
+  private static incorporateNewPermissions(newPermissions: Set<PathPermission>, currentPermissions: Set<PathPermission>): Set<PathPermission> {
+    if (newPermissions.has(PathPermission.CAN_GET)) currentPermissions.delete(PathPermission.NO_GET);
+    if (newPermissions.has(PathPermission.CAN_SET)) currentPermissions.delete(PathPermission.NO_SET);
+    return new Set<PathPermission>([...newPermissions, ...currentPermissions]);
+  }
+
+  private static canExecuteAction(permissions: Set<PathPermission>, action: PathAction): boolean {
+    switch (action) {
+      case PathAction.GET:
+        return permissions.has(PathPermission.CAN_GET);
+      case PathAction.SET:
+        return permissions.has(PathPermission.CAN_SET)
+    }
+  }
+
+  addPermission(permission: PathPermissionSetting): void {
     set(
       this.permissionTree,
       permission.path,
-      {[Permission.PermissionTypesKey]: permission.pathPermissionTypes}
+      {[Permission.PERMISSIONS_KEY]: permission.pathPermissionTypes}
     );
   }
 
+  hasPermission(path: Path, value: any, action: PathAction) {
+    const basePermission = this.getPermissionsAtPath(path);
 
-  hasPermission(path: Path, value: any, permissionType: PermissionRequestType) {
-    const innerPaths: Path[] = Object.keys(flatten(value)).map((path) => {
-      const parsedPath = [];
-      for (let i = 0; i < path.length; i += 2) {
-        parsedPath.push(path[i]);
-      }
-      return parsedPath;
-    });
+    // If the value is an object then there are more paths that we need to check.
+    if (isObjectLike(value)) {
+      // Get a list of all of the paths inside the "value" object.
+      const innerPaths: Path[] = Object.keys(flatten(value)).map((path) => {
+        // Create the segmented path by taking all the values in the odd index.
+        const segmentedPath = [];
+        for (let i = 0; i < path.length; i += 2) {
+          segmentedPath.push(path[i]);
+        }
+        return segmentedPath;
+      });
 
-    return innerPaths.every((innerPath) => {
-      const permission = this.getFinalPathPermission(path.concat(innerPath));
-      switch (permissionType) {
-        case PermissionRequestType.READ:
-          return permission.has(PathPermissionType.READ);
-        case PermissionRequestType.WRITE:
-          return permission.has(PathPermissionType.WRITE)
-      }
-    })
+      // We can continue the check from the last node that we went over.
+      const basePermissionTreeNode = get(this.permissionTree, path, {});
+
+      // Make sure every one of the paths has has the correct permission.
+      return innerPaths.every((innerPath) => {
+        const permissions = this.getPermissionsAtPath(innerPath, basePermissionTreeNode, basePermission);
+        return Permission.canExecuteAction(permissions, action);
+      });
+    } else {
+      // If the value is not an object then we check simply verify.
+      return Permission.canExecuteAction(basePermission, action);
+    }
   }
 
-  private getFinalPathPermission(
-    path: Path,
-    startingNode?: any,
-    startingPermissions?: Set<PathPermissionType>
-  ): Set<PathPermissionType> {
-    let currentPermissions = startingPermissions || new Set<PathPermissionType>();
-    let currentSegment = startingNode || this.permissionTree;
+  private getPermissionsAtPath(path: Path, startingLeaf?: any, startingPermissions?: Set<PathPermission>): Set<PathPermission> {
+    let currentPermissions = startingPermissions || new Set<PathPermission>();
+    let currentLeaf = startingLeaf || this.permissionTree;
+
+    if (currentLeaf.hasOwnProperty(Permission.PERMISSIONS_KEY)) {
+      currentPermissions = Permission.incorporateNewPermissions(currentLeaf[Permission.PERMISSIONS_KEY], currentPermissions);
+    }
+
     for (let segmentKey of path) {
-      if (currentSegment.hasOwnProperty(Permission.PermissionTypesKey)) {
-        currentPermissions = new Set([...currentPermissions, ...currentSegment[Permission.PermissionTypesKey]]);
+      if (!currentLeaf.hasOwnProperty(segmentKey)) break;
+      currentLeaf = currentLeaf[segmentKey];
+
+      if (currentLeaf.hasOwnProperty(Permission.PERMISSIONS_KEY)) {
+        currentPermissions = Permission.incorporateNewPermissions(currentLeaf[Permission.PERMISSIONS_KEY], currentPermissions);
       }
-
-      if (!currentSegment.hasOwnProperty(segmentKey)) break;
-
-      currentSegment = currentSegment[segmentKey];
     }
 
     return currentPermissions;

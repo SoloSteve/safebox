@@ -1,11 +1,12 @@
 import Permission from "./Permission";
-import {PathPermissionType} from "../types";
+import {PathAction, PathPermission} from "../types";
 
-test('Creates the permission tree correctly', () => {
+
+test("Creates the permission tree correctly", () => {
   const permission = new Permission([
-    {path: ['a', 'b', 'c'], pathPermissionTypes: new Set([PathPermissionType.READ])},
-    {path: ['a', 'b', 'c', 'd'], pathPermissionTypes: new Set([PathPermissionType.NO_READ])},
-    {path: ['e', 'f'], pathPermissionTypes: new Set([PathPermissionType.READ])}
+    {path: ['a', 'b', 'c'], pathPermissionTypes: new Set([PathPermission.CAN_GET])},
+    {path: ['a', 'b', 'c', 'd'], pathPermissionTypes: new Set([PathPermission.NO_GET])},
+    {path: ['e', 'f'], pathPermissionTypes: new Set([PathPermission.CAN_GET])}
   ]);
   // @ts-ignore
   expect(permission.permissionTree).toEqual({
@@ -13,10 +14,10 @@ test('Creates the permission tree correctly', () => {
       b: {
         c: {
           // @ts-ignore
-          [Permission.permissionTypesSymbol]: new Set([PathPermissionType.READ]),
+          [Permission.PERMISSIONS_KEY]: new Set([PathPermission.CAN_GET]),
           d: {
             // @ts-ignore
-            [Permission.permissionTypesSymbol]: new Set([PathPermissionType.NO_READ])
+            [Permission.PERMISSIONS_KEY]: new Set([PathPermission.NO_GET])
           }
         }
       }
@@ -24,8 +25,55 @@ test('Creates the permission tree correctly', () => {
     e: {
       f: {
         // @ts-ignore
-        [Permission.permissionTypesSymbol]: new Set([PathPermissionType.READ]),
+        [Permission.PERMISSIONS_KEY]: new Set([PathPermission.CAN_GET]),
       }
     }
   });
 });
+
+describe("Test Permissions", () => {
+  test("Single Permission Rule", () => {
+    const permission = new Permission([
+      {path: ['a', 'b'], pathPermissionTypes: new Set([PathPermission.CAN_GET])}
+    ]);
+    expect(permission.hasPermission(['a', 'b'], 0, PathAction.GET)).toBe(true);
+  });
+
+  test("Multiple Permission Rules", () => {
+    const permission = new Permission([
+      {path: ['a', 'b'], pathPermissionTypes: new Set([PathPermission.CAN_SET])},
+      {path: ['a', 'b2', 'c'], pathPermissionTypes: new Set([PathPermission.CAN_GET, PathPermission.NO_SET])}
+    ]);
+    expect(permission.hasPermission(['a', 'b2', 'c'], 0, PathAction.GET)).toBe(true);
+  });
+
+  test("Permission Changed Mid-Path", () => {
+    const permission = new Permission([
+      {path: ['a', 'b'], pathPermissionTypes: new Set([PathPermission.CAN_GET])},
+      {path: ['a', 'b2', 'c'], pathPermissionTypes: new Set([PathPermission.NO_GET, PathPermission.CAN_SET])}
+    ]);
+    expect(permission.hasPermission(['a', 'b2', 'c'], 0, PathAction.GET)).toBe(false);
+  });
+
+  test("No Rules", () => {
+    const permission = new Permission([]);
+    expect(permission.hasPermission(['a', 'b'], 0, PathAction.SET)).toBe(false);
+  });
+
+  test("Partial Path Rule", () => {
+    const permission = new Permission([
+      {path: ['a'], pathPermissionTypes: new Set([PathPermission.CAN_GET])},
+    ]);
+    expect(permission.hasPermission(['a', 'b', 'c'], 0, PathAction.GET)).toBe(true);
+  });
+
+  test("Path Continues In Value", () => {
+    const permission = new Permission([
+      {path: ['a'], pathPermissionTypes: new Set([PathPermission.NO_SET])},
+      {path: ['a', 'b'], pathPermissionTypes: new Set([PathPermission.NO_GET])},
+      {path: ['a', 'b', 'c'], pathPermissionTypes: new Set([PathPermission.CAN_GET])},
+    ]);
+    expect(permission.hasPermission(['a'], {b: {c: 0}}, PathAction.GET)).toBe(true);
+  });
+});
+
