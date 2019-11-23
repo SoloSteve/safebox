@@ -4,7 +4,7 @@ import {JSONSchema4} from "json-schema";
 
 export type Path = string[];
 
-// Permissions
+// Permission Types
 
 export enum PathAction {
   GET,
@@ -27,6 +27,10 @@ export interface PathPermissionSetting {
 export interface SafeboxConfiguration {
   schema: JSONSchema4
 }
+
+// Validation Types
+
+export type KeywordHandler = (schema: JSONSchema4, key: string) => string[] | false;
 
 // Safebox Types
 

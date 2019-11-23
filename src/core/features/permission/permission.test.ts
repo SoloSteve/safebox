@@ -1,5 +1,5 @@
-import Permission from "./Permission";
-import {PathAction, PathPermission} from "../types";
+import Permission from "./permission";
+import {PathAction, PathPermission} from "../../types";
 
 
 test("Creates the permission tree correctly", () => {
@@ -32,14 +32,14 @@ test("Creates the permission tree correctly", () => {
 });
 
 describe("Test Permissions", () => {
-  test("Single Permission Rule", () => {
+  test("Single permission Rule", () => {
     const permission = new Permission([
       {path: ['a', 'b'], pathPermissionTypes: new Set([PathPermission.CAN_GET])}
     ]);
     expect(permission.hasPermission(['a', 'b'], 0, PathAction.GET)).toBe(true);
   });
 
-  test("Multiple Permission Rules", () => {
+  test("Multiple permission Rules", () => {
     const permission = new Permission([
       {path: ['a', 'b'], pathPermissionTypes: new Set([PathPermission.CAN_SET])},
       {path: ['a', 'b2', 'c'], pathPermissionTypes: new Set([PathPermission.CAN_GET, PathPermission.NO_SET])}
@@ -47,7 +47,7 @@ describe("Test Permissions", () => {
     expect(permission.hasPermission(['a', 'b2', 'c'], 0, PathAction.GET)).toBe(true);
   });
 
-  test("Permission Changed Mid-Path", () => {
+  test("permission Changed Mid-Path", () => {
     const permission = new Permission([
       {path: ['a', 'b'], pathPermissionTypes: new Set([PathPermission.CAN_GET])},
       {path: ['a', 'b2', 'c'], pathPermissionTypes: new Set([PathPermission.NO_GET, PathPermission.CAN_SET])}

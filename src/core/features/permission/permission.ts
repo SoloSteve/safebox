@@ -1,6 +1,6 @@
 import {get, isObjectLike, set} from "lodash";
 import {flatten} from 'flat';
-import {Path, PathAction, PathPermission, PathPermissionSetting} from "../types";
+import {Path, PathAction, PathPermission, PathPermissionSetting} from "../../types";
 
 export default class Permission {
   private static PERMISSIONS_KEY = Symbol('PERMISSIONS_KEY');
@@ -9,21 +9,6 @@ export default class Permission {
   constructor(permissions: PathPermissionSetting[]) {
     this.permissionTree = {};
     permissions.forEach(this.addPermission.bind(this));
-  }
-
-  private static incorporateNewPermissions(newPermissions: Set<PathPermission>, currentPermissions: Set<PathPermission>): Set<PathPermission> {
-    if (newPermissions.has(PathPermission.CAN_GET)) currentPermissions.delete(PathPermission.NO_GET);
-    if (newPermissions.has(PathPermission.CAN_SET)) currentPermissions.delete(PathPermission.NO_SET);
-    return new Set<PathPermission>([...newPermissions, ...currentPermissions]);
-  }
-
-  private static canExecuteAction(permissions: Set<PathPermission>, action: PathAction): boolean {
-    switch (action) {
-      case PathAction.GET:
-        return permissions.has(PathPermission.CAN_GET);
-      case PathAction.SET:
-        return permissions.has(PathPermission.CAN_SET)
-    }
   }
 
   addPermission(permission: PathPermissionSetting): void {
@@ -52,7 +37,7 @@ export default class Permission {
       // We can continue the check from the last node that we went over.
       const basePermissionTreeNode = get(this.permissionTree, path, {});
 
-      // Make sure every one of the paths has has the correct permission.
+      // Make sure every one of the inner paths has has the correct permission.
       return innerPaths.every((innerPath) => {
         const permissions = this.getPermissionsAtPath(innerPath, basePermissionTreeNode, basePermission);
         return Permission.canExecuteAction(permissions, action);
@@ -63,12 +48,27 @@ export default class Permission {
     }
   }
 
+  private static mergePermissions(newPermissions: Set<PathPermission>, currentPermissions: Set<PathPermission>): Set<PathPermission> {
+    if (newPermissions.has(PathPermission.CAN_GET)) currentPermissions.delete(PathPermission.NO_GET);
+    if (newPermissions.has(PathPermission.CAN_SET)) currentPermissions.delete(PathPermission.NO_SET);
+    return new Set<PathPermission>([...newPermissions, ...currentPermissions]);
+  }
+
+  private static canExecuteAction(permissions: Set<PathPermission>, action: PathAction): boolean {
+    switch (action) {
+      case PathAction.GET:
+        return permissions.has(PathPermission.CAN_GET);
+      case PathAction.SET:
+        return permissions.has(PathPermission.CAN_SET)
+    }
+  }
+
   private getPermissionsAtPath(path: Path, startingLeaf?: any, startingPermissions?: Set<PathPermission>): Set<PathPermission> {
     let currentPermissions = startingPermissions || new Set<PathPermission>();
     let currentLeaf = startingLeaf || this.permissionTree;
 
     if (currentLeaf.hasOwnProperty(Permission.PERMISSIONS_KEY)) {
-      currentPermissions = Permission.incorporateNewPermissions(currentLeaf[Permission.PERMISSIONS_KEY], currentPermissions);
+      currentPermissions = Permission.mergePermissions(currentLeaf[Permission.PERMISSIONS_KEY], currentPermissions);
     }
 
     for (let segmentKey of path) {
@@ -76,7 +76,7 @@ export default class Permission {
       currentLeaf = currentLeaf[segmentKey];
 
       if (currentLeaf.hasOwnProperty(Permission.PERMISSIONS_KEY)) {
-        currentPermissions = Permission.incorporateNewPermissions(currentLeaf[Permission.PERMISSIONS_KEY], currentPermissions);
+        currentPermissions = Permission.mergePermissions(currentLeaf[Permission.PERMISSIONS_KEY], currentPermissions);
       }
     }
 
