@@ -16,23 +16,23 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/stevecode/safebox#readme",
   "devDependencies": {
-    "@types/flat": "0.0.28",
-    "@types/jest": "^24.0.21",
-    "@types/lodash": "^4.14.144",
-    "@types/node": "^12.11.2",
-    "@typescript-eslint/eslint-plugin": "^2.5.0",
-    "@typescript-eslint/parser": "^2.5.0",
-    "eslint": "^6.5.1",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
-    "jest": "^24.9.0",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.6.4"
+    "@types/flat": "latest",
+    "@types/jest": "latest",
+    "@types/lodash": "latest",
+    "@types/node": "latest",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "eslint": "latest",
+    "eslint-config-airbnb-base": "latest",
+    "eslint-plugin-import": "latest",
+    "jest": "latest",
+    "ts-jest": "latest",
+    "typescript": "latest"
   },
   "dependencies": {
-    "ajv": "^6.10.2",
-    "flat": "^5.0.0",
-    "json-schema-traverse": "^0.4.1",
+    "ajv": "latest",
+    "flat": "latest",
+    "json-schema-traverse": "latest",
     "lodash": "latest"
   }
 }
