@@ -30,7 +30,7 @@ export interface SafeboxConfiguration {
 
 // Validation Types
 
-export type KeywordHandler = (schema: JSONSchema4, key: string) => string[] | false;
+export type KeywordHandler = (schema: any, key: string) => string[] | false;
 
 // Safebox Types
 

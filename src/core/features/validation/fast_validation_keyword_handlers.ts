@@ -14,6 +14,7 @@ const keywordHandlers: { [key: string]: KeywordHandler } = {
     if (Number.isInteger(parseInt(key))) {
       return ["items"];
     }
+    return false;
   }
 };
 
