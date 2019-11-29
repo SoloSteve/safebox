@@ -6,10 +6,13 @@ test("Creates the permission tree correctly", () => {
   const permission = new Permission([
     {path: ['a', 'b', 'c'], pathPermissionTypes: new Set([PathPermission.CAN_GET])},
     {path: ['a', 'b', 'c', 'd'], pathPermissionTypes: new Set([PathPermission.NO_GET])},
-    {path: ['e', 'f'], pathPermissionTypes: new Set([PathPermission.CAN_GET])}
+    {path: ['e', 'f'], pathPermissionTypes: new Set([PathPermission.CAN_GET])},
+    {path: [], pathPermissionTypes: new Set([PathPermission.NO_SET])}
   ]);
   // @ts-ignore
   expect(permission.permissionTree).toEqual({
+    // @ts-ignore
+    [Permission.PERMISSIONS_KEY]: new Set([PathPermission.NO_SET]),
     a: {
       b: {
         c: {

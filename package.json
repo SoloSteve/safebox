@@ -17,8 +17,8 @@
   "homepage": "https://bitbucket.org/stevecode/safebox#readme",
   "devDependencies": {
     "@types/flat": "latest",
-    "@types/jest": "latest",
-    "@types/lodash": "latest",
+    "@types/jest": "^24.0.23",
+    "@types/lodash": "^4.14.149",
     "@types/node": "latest",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
@@ -26,7 +26,7 @@
     "eslint-config-airbnb-base": "latest",
     "eslint-plugin-import": "latest",
     "jest": "latest",
-    "ts-jest": "latest",
+    "ts-jest": "^24.2.0",
     "typescript": "latest"
   },
   "dependencies": {

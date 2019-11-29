@@ -12,11 +12,15 @@ export default class Permission {
   }
 
   addPermission(permission: PathPermissionSetting): void {
-    set(
-      this.permissionTree,
-      permission.path,
-      {[Permission.PERMISSIONS_KEY]: permission.pathPermissionTypes}
-    );
+    if (permission.path.length === 0) {
+      this.permissionTree[Permission.PERMISSIONS_KEY] = permission.pathPermissionTypes;
+    } else {
+      set(
+        this.permissionTree,
+        permission.path,
+        {[Permission.PERMISSIONS_KEY]: permission.pathPermissionTypes}
+      );
+    }
   }
 
   hasPermission(path: Path, value: any, action: PathAction) {
