@@ -78,5 +78,14 @@ describe("Test Permissions", () => {
     ]);
     expect(permission.hasPermission(['a'], {b: {c: 0}}, PathAction.GET)).toBe(true);
   });
+
+  test("Root Path", () => {
+    const permission = new Permission([
+      {path: [], pathPermissionTypes: new Set([PathPermission.CAN_GET])},
+      {path: ['a', 'b'], pathPermissionTypes: new Set([PathPermission.NO_GET])},
+      {path: ['a', 'b', 'c'], pathPermissionTypes: new Set([PathPermission.CAN_GET])},
+    ]);
+    expect(permission.hasPermission([], null, PathAction.GET)).toBe(false);
+  });
 });
 

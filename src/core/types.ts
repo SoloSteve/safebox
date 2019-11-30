@@ -43,6 +43,6 @@ export enum AccessStatusCode {
 }
 
 export interface Access {
-  value: any;
+  value?: any;
   status: AccessStatusCode
 }
