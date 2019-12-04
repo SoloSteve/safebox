@@ -1,6 +1,6 @@
 import PermissionChecker from "./permission_checker";
 import {PathAction} from "../../types";
-import Permission from "./Permission";
+import Permission from "./permission";
 
 
 test("Creates the permission tree correctly", () => {

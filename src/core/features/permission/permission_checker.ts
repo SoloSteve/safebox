@@ -1,7 +1,7 @@
 import {get, isObjectLike, set} from "lodash";
 import {flatten} from 'flat';
 import {Path, PathAction, PathPermissionSetting} from "../../types";
-import Permission from "./Permission";
+import Permission from "./permission";
 
 export default class PermissionChecker {
   private static PERMISSIONS_KEY = Symbol('PERMISSIONS_KEY');
@@ -25,7 +25,7 @@ export default class PermissionChecker {
   }
 
   public checkPermission(action: PathAction, path: Path, value?: any): { hasPermission: boolean, problems: Path[] } {
-    let hasPermission = false;
+    let hasPermission;
     const problems = [];
     const basePermission = this.getPermissionForPath(path);
 
