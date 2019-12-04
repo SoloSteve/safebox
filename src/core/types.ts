@@ -1,4 +1,5 @@
 import {JSONSchema4} from "json-schema";
+import Permission from "./features/permission/Permission";
 
 // Global Types
 
@@ -11,16 +12,10 @@ export enum PathAction {
   SET
 }
 
-export enum PathPermission {
-  CAN_GET,
-  CAN_SET,
-  NO_GET,
-  NO_SET
-}
 
 export interface PathPermissionSetting {
   path: Path,
-  pathPermissionTypes: Set<PathPermission>
+  permissions: Permission
 }
 
 

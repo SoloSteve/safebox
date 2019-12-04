@@ -1,33 +1,33 @@
 import ISafeboxMemory from "./isafebox_memory";
 import Validation from "./features/validation/validation";
-import Permission from "./features/permission/permission";
+import PermissionChecker from "./features/permission/permission_checker";
 import {JSONSchema4} from "json-schema";
 import {Access, AccessStatusCode, Path, PathAction, PathPermissionSetting} from "./types";
 
 export default class Safebox {
   private readonly memory: ISafeboxMemory;
   private readonly validation: Validation;
-  private readonly permission: Permission;
+  private readonly permission: PermissionChecker;
 
   constructor(memory: ISafeboxMemory, options: SafeboxOptions) {
     this.memory = memory;
     this.validation = new Validation(options.schema);
-    this.permission = new Permission(options.permissions || []);
+    this.permission = new PermissionChecker(options.permissions || []);
   }
 
-  public get(path?: Path, permission?: Permission): Access {
+  public get(path?: Path, permission?: PermissionChecker): Access {
     const permissionChecker = permission || this.permission;
-    if (!permissionChecker.hasPermission(path || [], null, PathAction.GET)) {
+    if (!permissionChecker.checkPermission(PathAction.GET,path || [], null).hasPermission) {
       return {status: AccessStatusCode.PERMISSION_DENIED};
     }
     return {value: this.memory.get(path), status: AccessStatusCode.SUCCESS};
   }
 
-  public set(value: any, path: Path, permission?: Permission): Access {
+  public set(value: any, path: Path, permission?: PermissionChecker): Access {
     const permissionChecker = permission || this.permission;
 
     // Permission
-    if (!permissionChecker.hasPermission(path || [], null, PathAction.SET)) {
+    if (!permissionChecker.checkPermission(PathAction.SET,path || [], null).hasPermission) {
       return {status: AccessStatusCode.PERMISSION_DENIED};
     }
 
