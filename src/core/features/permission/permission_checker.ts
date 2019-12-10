@@ -1,5 +1,5 @@
-import {get, isObjectLike, set} from "lodash";
-import {flatten} from 'flat';
+import {get, isObjectLike, isEqual, set, uniqWith} from "lodash";
+import traverse = require("traverse");
 import {Path, PathAction, PathPermissionSetting} from "../../types";
 import Permission from "./permission";
 
@@ -32,13 +32,9 @@ export default class PermissionChecker {
     // If the value is an object then there are more paths that we need to check.
     if (isObjectLike(value)) {
       // Get a list of all of the paths inside the "value" object.
-      const innerPaths: Path[] = Object.keys(flatten(value)).map((path) => {
-        // Create the segmented path from the string by taking all the values in the odd index.
-        const segmentedPath = [];
-        for (let i = 0; i < path.length; i += 2) {
-          segmentedPath.push(path[i]);
-        }
-        return segmentedPath;
+      const innerPaths: Path[] = [];
+      traverse(value).forEach(function () {
+        if (this.isLeaf) innerPaths.push(path.concat(this.path));
       });
 
       // We can continue the check from the last node that we went over.
@@ -46,38 +42,50 @@ export default class PermissionChecker {
 
       // Make sure every one of the inner paths has has the correct permission.
       hasPermission = innerPaths.every((innerPath) => {
-        this.getPermissionForPath(innerPath, basePermissionTreeNode, basePermission).canExecuteAction(action);
+        let innerPathHasPermission = this.getPermissionForPath(innerPath, basePermissionTreeNode, basePermission).canExecuteAction(action);
+        if (innerPathHasPermission) {
+          problems.push(...this.findContradictingPermissions(action, innerPath));
+          if (problems.length > 0) {
+            innerPathHasPermission = false;
+          }
+        } else {
+          problems.push(innerPath);
+        }
+        return innerPathHasPermission;
       });
-      if (hasPermission) {
-        problems.push(...PermissionChecker.findContradictingPermissions(action, basePermissionTreeNode, path));
-      }
     } else {
       // If the value is not an object then we simply verify.
       hasPermission = basePermission.canExecuteAction(action);
-      if (hasPermission) {
-        const basePermissionTreeNode = get(this.permissionTree, path, {});
-        problems.push(...PermissionChecker.findContradictingPermissions(action, basePermissionTreeNode, path));
-      }
     }
 
-    return {hasPermission, problems}
+    problems.push(...this.findContradictingPermissions(action, path));
+    if (problems.length > 0) {
+      hasPermission = false;
+    }
+
+    return {hasPermission, problems: uniqWith(problems, isEqual)}
 
   }
 
-  private static findContradictingPermissions(action: PathAction, startingLeaf: any, currentPath: Path): Path[] {
-    const paths: Path[] = [];
-    if (
-      startingLeaf.hasOwnProperty(PermissionChecker.PERMISSIONS_KEY)
-      && !startingLeaf[PermissionChecker.PERMISSIONS_KEY].canExecuteAction(action)
-    ) {
-      return [currentPath];
-    } else {
-      Object.entries(startingLeaf).forEach(([key, leaf]) => {
-        currentPath.push(key);
-        paths.push(...this.findContradictingPermissions(action, leaf, currentPath));
-      });
-      return paths;
+  private findContradictingPermissions(action: PathAction, startingPath: Path): Path[] {
+    const pathsToCheck: Path[] = [startingPath];
+    const problematicPaths: Path[] = [];
+
+    while (pathsToCheck.length > 0) {
+      const pathToCheck = pathsToCheck.shift() as Path;
+      const objectAtPath = get(this.permissionTree, pathToCheck, {});
+
+      if (
+        objectAtPath.hasOwnProperty(PermissionChecker.PERMISSIONS_KEY)
+        && !objectAtPath[PermissionChecker.PERMISSIONS_KEY].canExecuteAction(action)
+      ) {
+        problematicPaths.push(pathToCheck);
+      } else {
+        pathsToCheck.push(...Object.keys(objectAtPath).map((key) => pathToCheck.concat(key)));
+      }
     }
+
+    return problematicPaths;
   }
 
   private getPermissionForPath(path: Path, startingLeaf?: any, startingPermission?: Permission) {

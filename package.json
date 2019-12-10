@@ -20,6 +20,7 @@
     "@types/jest": "^24.0.23",
     "@types/lodash": "^4.14.149",
     "@types/node": "latest",
+    "@types/traverse": "^0.6.32",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "eslint": "latest",
@@ -31,8 +32,8 @@
   },
   "dependencies": {
     "ajv": "latest",
-    "flat": "latest",
     "json-schema-traverse": "latest",
-    "lodash": "latest"
+    "lodash": "latest",
+    "traverse": "^0.6.6"
   }
 }
