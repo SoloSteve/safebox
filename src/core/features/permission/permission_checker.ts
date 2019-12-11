@@ -1,4 +1,5 @@
-import {get, isObjectLike, isEqual, set, uniqWith} from "lodash";
+import {isObjectLike, isEqual, uniqWith} from "lodash";
+import {get, set} from "../../utils/object_access";
 import traverse = require("traverse");
 import {Path, PathAction, PathPermissionSetting} from "../../types";
 import Permission from "./permission";

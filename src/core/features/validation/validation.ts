@@ -2,7 +2,8 @@ import {JSONSchema4} from "json-schema";
 import * as Ajv from "ajv";
 import {Path} from "../../types";
 import KeywordHandlers from "./fast_validation_keyword_handlers";
-import {get, has} from "lodash";
+import {has} from "lodash";
+import {get} from "../../utils/object_access";
 
 const traverse = require("json-schema-traverse");
 
