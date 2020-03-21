@@ -88,7 +88,9 @@ describe("Check Permissions", () => {
   test("No root permissions", () => {
     expect(permission.checkPermission(PathAction.GET, [])).toEqual({
       hasPermission: false,
-      problems: []
+      problems: [
+        []
+      ]
     })
   });
   test("Set single value", () => {
