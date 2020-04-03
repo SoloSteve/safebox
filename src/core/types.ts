@@ -1,5 +1,5 @@
 import {JSONSchema4} from "json-schema";
-import Permission from "./features/permission/permission";
+import {Permission} from "./features/permission/permission";
 
 // Global Types
 

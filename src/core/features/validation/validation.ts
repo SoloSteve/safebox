@@ -1,7 +1,7 @@
 import {JSONSchema4} from "json-schema";
 import * as Ajv from "ajv";
 import {Path} from "../../types";
-import KeywordHandlers from "./fast_validation_keyword_handlers";
+import {keywordHandlers} from "./fast_validation_keyword_handlers";
 import {has} from "lodash";
 import {get} from "../../utils/object_access";
 
@@ -9,7 +9,7 @@ const traverse = require("json-schema-traverse");
 
 const PARENT_KEYWORD_INDEX = 4;
 
-export default class Validation {
+export class Validation {
   private readonly validator: Ajv.Ajv;
   private readonly schema: JSONSchema4;
   public readonly hasFastValidation: boolean;
@@ -44,7 +44,7 @@ export default class Validation {
 
     traverse(this.schema, (...data: any) => {
       if (
-        !Object.keys(KeywordHandlers).includes(data[PARENT_KEYWORD_INDEX])
+        !Object.keys(keywordHandlers).includes(data[PARENT_KEYWORD_INDEX])
         && data[PARENT_KEYWORD_INDEX] !== undefined
       ) {
         isSupported = false;
@@ -59,8 +59,8 @@ export default class Validation {
     let schemaPath: Path = [];
 
     objectPath.forEach((pathSegment => {
-      for (let keyword of Object.keys(KeywordHandlers)) {
-        const result = KeywordHandlers[keyword](currentSchemaBlock, pathSegment);
+      for (let keyword of Object.keys(keywordHandlers)) {
+        const result = keywordHandlers[keyword](currentSchemaBlock, pathSegment);
         if (result !== false) {
           currentSchemaBlock = get(currentSchemaBlock, result);
           schemaPath.push(...result);

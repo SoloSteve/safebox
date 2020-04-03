@@ -1,6 +1,6 @@
 import {PathAction} from "../../types";
 
-export default class Permission {
+export class Permission {
   private allowedActions: Set<PathAction>;
 
   constructor(...allowedActions: PathAction[]) {

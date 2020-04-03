@@ -1,8 +1,8 @@
-import ISafeboxMemory from "../core/isafebox_memory";
+import {ISafeboxMemory} from "../core/isafebox_memory";
 import {has} from "lodash";
 import {get, set} from "../core/utils/object_access";
 
-export default class SafeboxLocalMemory implements ISafeboxMemory {
+export class SafeboxLocalMemory implements ISafeboxMemory {
   private obj: any;
 
   constructor() {

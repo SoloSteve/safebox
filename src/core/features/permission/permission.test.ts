@@ -1,6 +1,6 @@
-import PermissionChecker from "./permission_checker";
+import {PermissionChecker} from "./permission_checker";
 import {PathAction} from "../../types";
-import Permission from "./permission";
+import {Permission} from "./permission";
 
 
 describe("Check Permissions", () => {
