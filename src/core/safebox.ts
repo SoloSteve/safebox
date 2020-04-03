@@ -16,6 +16,10 @@ export class Safebox {
     this.permission = new PermissionChecker(options.permissions || []);
   }
 
+  public addPermissions(...permissions: PathPermissionSetting[]) {
+    permissions.forEach(this.permission.addPermission);
+  }
+
   public get(path?: Path, partial: boolean = false, permission?: PermissionChecker): Access {
     const permissionChecker = permission || this.permission;
 
