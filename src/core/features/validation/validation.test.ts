@@ -1,4 +1,4 @@
-import Validation from "./validation";
+import {Validation} from "./validation";
 
 describe("Check path converter", () => {
   const validator = new Validation({

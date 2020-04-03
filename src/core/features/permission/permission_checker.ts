@@ -1,10 +1,10 @@
-import {isObjectLike, isEqual, uniqWith} from "lodash";
+import {isEqual, isObjectLike, uniqWith} from "lodash";
 import {get, set} from "../../utils/object_access";
-import traverse = require("traverse");
 import {Path, PathAction, PathPermissionSetting} from "../../types";
-import Permission from "./permission";
+import {Permission} from "./permission";
+import traverse = require("traverse");
 
-export default class PermissionChecker {
+export class PermissionChecker {
   private static PERMISSIONS_KEY = Symbol('PERMISSIONS_KEY');
   private readonly permissionTree: any;
 

@@ -1,11 +1,11 @@
-import ISafeboxMemory from "./isafebox_memory";
-import Validation from "./features/validation/validation";
-import PermissionChecker from "./features/permission/permission_checker";
+import {ISafeboxMemory} from "./isafebox_memory";
+import {Validation} from "./features/validation/validation";
+import {PermissionChecker} from "./features/permission/permission_checker";
 import {JSONSchema4} from "json-schema";
 import {Access, AccessStatusCode, Path, PathAction, PathPermissionSetting} from "./types";
 import {unset} from "lodash";
 
-export default class Safebox {
+export class Safebox {
   private readonly memory: ISafeboxMemory;
   private readonly validation: Validation;
   private readonly permission: PermissionChecker;
@@ -57,7 +57,7 @@ export default class Safebox {
     path = path || [];
 
     // Schema Validation
-    let isValid = false;
+    let isValid: boolean;
     if (this.validation.hasFastValidation) {
       isValid = this.validation.isValid(path, value);
     } else {

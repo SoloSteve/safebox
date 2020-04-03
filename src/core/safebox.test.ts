@@ -1,8 +1,8 @@
-import Safebox from "./safebox";
-import SafeboxLocalMemory from "../memory/safebox_local_memory";
-import Permission from "./features/permission/permission";
+import {Safebox} from "./safebox";
+import {SafeboxLocalMemory} from "../memory/safebox_local_memory";
+import {Permission} from "./features/permission/permission";
 import {AccessStatusCode, PathAction} from "./types";
-import PermissionChecker from "./features/permission/permission_checker";
+import {PermissionChecker} from "./features/permission/permission_checker";
 
 describe("Integration Test", () => {
   const safebox = new Safebox(new SafeboxLocalMemory(), {

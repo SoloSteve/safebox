@@ -1,6 +1,6 @@
 import {KeywordHandler} from "../../types";
 
-const keywordHandlers: { [key: string]: KeywordHandler } = {
+export const keywordHandlers: { [key: string]: KeywordHandler } = {
   "properties": (schema, key) => {
     if (
       schema.hasOwnProperty("properties")
@@ -17,5 +17,3 @@ const keywordHandlers: { [key: string]: KeywordHandler } = {
     return false;
   }
 };
-
-export default keywordHandlers;
