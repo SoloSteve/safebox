@@ -1,6 +1,6 @@
 {
   "name": "safebox",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A safe and secure server side state solution",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,8 @@
     "eslint-plugin-import": "latest",
     "jest": "<25.0.0",
     "ts-jest": "^24.2.0",
-    "typescript": "latest"
+    "typescript": "latest",
+    "nodemark": "latest"
   },
   "dependencies": {
     "ajv": "latest",
