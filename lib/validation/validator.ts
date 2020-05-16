@@ -3,7 +3,6 @@ import * as Ajv from "ajv";
 import {Path} from "../types";
 import {SCHEMA_KEYWORD_HANDLERS} from "./keyword_handlers";
 import {get} from "../path_utils";
-import {keywordHandlers} from "../../src_old/core/features/validation/fast_validation_keyword_handlers";
 
 const traverse = require("json-schema-traverse");
 const PARENT_KEYWORD_INDEX = 4;
@@ -16,6 +15,8 @@ export class Validator {
     this.validator = new Ajv({});
     this.validator.addSchema(schema);
     this.schema = schema;
+
+    if (!this.pathValidationSupport) throw new Error("This schema is unsupported at this time");
   }
 
   /**
@@ -26,7 +27,7 @@ export class Validator {
 
     traverse(this.schema, (...data: any) => {
       if (
-        !Object.keys(keywordHandlers).includes(data[PARENT_KEYWORD_INDEX])
+        !Object.keys(SCHEMA_KEYWORD_HANDLERS).includes(data[PARENT_KEYWORD_INDEX])
         && data[PARENT_KEYWORD_INDEX] !== undefined
       ) {
         isSupported = false;
@@ -97,13 +98,12 @@ export class Validator {
    */
   private pathToSubSchema(path: Path): JSONSchema4 {
     let currentSubSchema = this.schema; // Start from the root.
-
     path.forEach((pathSegment) => {
       for (let schemaKeywordHandler of Object.values(SCHEMA_KEYWORD_HANDLERS)) {
         const partialSchemaPath = schemaKeywordHandler(currentSubSchema, pathSegment);
         if (partialSchemaPath !== false) {
           currentSubSchema = get(currentSubSchema, partialSchemaPath);
-          break;
+          return;
         }
       }
       throw new Error(`Unable to find sub-schema: Unable to handle path segment: ${pathSegment}`);

@@ -9,8 +9,9 @@ export class Permit {
   private readonly permissionTree: PermissionTree;
 
 
-  constructor() {
+  constructor(...permissions: PathPermission[]) {
     this.permissionTree = {};
+    this.addPermissions(...permissions);
   }
 
   public addPermissions(...permissions: PathPermission[]) {
