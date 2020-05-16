@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AccessStatusCode = exports.PathAction = void 0;
 var PathAction;
 (function (PathAction) {
     PathAction[PathAction["GET"] = 0] = "GET";

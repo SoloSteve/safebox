@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Safebox = void 0;
 const validation_1 = require("./features/validation/validation");
 const permission_checker_1 = require("./features/permission/permission_checker");
 const types_1 = require("./types");

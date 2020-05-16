@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Validation = void 0;
 const Ajv = require("ajv");
 const fast_validation_keyword_handlers_1 = require("./fast_validation_keyword_handlers");
 const lodash_1 = require("lodash");

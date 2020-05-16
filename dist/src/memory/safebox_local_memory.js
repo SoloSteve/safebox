@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SafeboxLocalMemory = void 0;
 const lodash_1 = require("lodash");
 const object_access_1 = require("../core/utils/object_access");
 class SafeboxLocalMemory {

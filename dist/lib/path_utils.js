@@ -13,11 +13,11 @@ function get(obj, path, defaultValue) {
 exports.get = get;
 function set(obj, path, value) {
     if (path.length === 0) {
-        obj = value;
+        Object.assign(obj, value);
     }
     else {
-        lodash_1.set(obj, path, value);
+        lodash_1.setWith(obj, path, value, Object);
     }
 }
 exports.set = set;
-//# sourceMappingURL=object_access.js.map
+//# sourceMappingURL=path_utils.js.map

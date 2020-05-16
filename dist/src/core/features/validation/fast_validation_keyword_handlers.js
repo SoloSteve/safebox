@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.keywordHandlers = void 0;
 exports.keywordHandlers = {
     "properties": (schema, key) => {
         if (schema.hasOwnProperty("properties")
