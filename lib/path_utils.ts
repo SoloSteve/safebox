@@ -1,5 +1,5 @@
-import {get as _get, set as _set} from "lodash";
-import {Path} from "../types";
+import {get as _get, setWith as _setWith} from "lodash";
+import {Path} from "./types";
 
 export function get(obj: any, path: Path, defaultValue?: any) {
   if (path.length === 0) {
@@ -11,8 +11,8 @@ export function get(obj: any, path: Path, defaultValue?: any) {
 
 export function set(obj: any, path: Path, value: any) {
   if (path.length === 0) {
-    obj = value;
+    Object.assign(obj, value);
   } else {
-    _set(obj, path, value);
+    _setWith(obj, path, value, Object);
   }
 }
