@@ -1,6 +1,10 @@
 export type Path = string[];
 
-export class ValidationError extends Error {
+export class BaseSafeboxError extends Error {
+  public readonly isSafeboxError: boolean = true;
+}
+
+export class ValidationError extends BaseSafeboxError {
   public readonly path: Path;
 
   constructor(path: Path, ...params: any) {
@@ -17,7 +21,7 @@ export class ValidationError extends Error {
   }
 }
 
-export class PermissionDeniedError extends Error {
+export class PermissionDeniedError extends BaseSafeboxError {
   public readonly path: Path;
 
   constructor(path: Path, ...params: any) {
@@ -34,7 +38,7 @@ export class PermissionDeniedError extends Error {
   }
 }
 
-export class ObjectError extends Error {
+export class ObjectError extends BaseSafeboxError {
   public readonly path: Path;
 
   constructor(path: Path, ...params: any) {
