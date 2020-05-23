@@ -47,6 +47,9 @@ export class Validator {
    */
   public isValid(path: Path, value: any): boolean {
     const subSchema = this.pathToSubSchema(path);
+    if (subSchema === false) {
+      return false;
+    }
     return <boolean>this.validator.validate(subSchema, value);
   }
 
@@ -96,18 +99,20 @@ export class Validator {
    *
    * @throws {Error}: If the path does not correspond to a sub-schema.
    */
-  private pathToSubSchema(path: Path): JSONSchema4 {
+  private pathToSubSchema(path: Path): JSONSchema4 | false {
     let currentSubSchema = this.schema; // Start from the root.
-    path.forEach((pathSegment) => {
-      for (let schemaKeywordHandler of Object.values(SCHEMA_KEYWORD_HANDLERS)) {
-        const partialSchemaPath = schemaKeywordHandler(currentSubSchema, pathSegment);
-        if (partialSchemaPath !== false) {
-          currentSubSchema = get(currentSubSchema, partialSchemaPath);
-          return;
+
+    segmentLoop:
+      for (let pathSegment of path) {
+        for (let schemaKeywordHandler of Object.values(SCHEMA_KEYWORD_HANDLERS)) {
+          const partialSchemaPath = schemaKeywordHandler(currentSubSchema, pathSegment);
+          if (partialSchemaPath !== false) {
+            currentSubSchema = get(currentSubSchema, partialSchemaPath);
+            continue segmentLoop;
+          }
         }
+        return false;
       }
-      throw new Error(`Unable to find sub-schema: Unable to handle path segment: ${pathSegment}`);
-    });
 
     return currentSubSchema;
   }
