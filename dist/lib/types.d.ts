@@ -1,5 +1,4 @@
 export declare type Path = string[];
-
 export declare class BaseSafeboxError extends Error {
   readonly isSafeboxError: boolean;
 }

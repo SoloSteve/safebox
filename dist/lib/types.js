@@ -8,7 +8,6 @@ class BaseSafeboxError extends Error {
     this.isSafeboxError = true;
   }
 }
-
 exports.BaseSafeboxError = BaseSafeboxError;
 
 class ValidationError extends BaseSafeboxError {
@@ -21,7 +20,6 @@ class ValidationError extends BaseSafeboxError {
     this.path = path;
   }
 }
-
 exports.ValidationError = ValidationError;
 
 class PermissionDeniedError extends BaseSafeboxError {
