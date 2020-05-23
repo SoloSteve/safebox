@@ -26,21 +26,24 @@ class Validator {
         return isSupported;
     }
     isValid(path, value) {
-        const subSchema = this.pathToSubSchema(path);
-        return this.validator.validate(subSchema, value);
+      const subSchema = this.pathToSubSchema(path);
+      if (subSchema === false) {
+        return false;
+      }
+      return this.validator.validate(subSchema, value);
     }
     pathToSubSchema(path) {
         let currentSubSchema = this.schema;
-        path.forEach((pathSegment) => {
-            for (let schemaKeywordHandler of Object.values(keyword_handlers_1.SCHEMA_KEYWORD_HANDLERS)) {
-                const partialSchemaPath = schemaKeywordHandler(currentSubSchema, pathSegment);
-                if (partialSchemaPath !== false) {
-                    currentSubSchema = path_utils_1.get(currentSubSchema, partialSchemaPath);
-                    return;
-                }
-            }
-            throw new Error(`Unable to find sub-schema: Unable to handle path segment: ${pathSegment}`);
-        });
+      segmentLoop: for (let pathSegment of path) {
+        for (let schemaKeywordHandler of Object.values(keyword_handlers_1.SCHEMA_KEYWORD_HANDLERS)) {
+          const partialSchemaPath = schemaKeywordHandler(currentSubSchema, pathSegment);
+          if (partialSchemaPath !== false) {
+            currentSubSchema = path_utils_1.get(currentSubSchema, partialSchemaPath);
+            continue segmentLoop;
+          }
+        }
+        return false;
+      }
         return currentSubSchema;
     }
 }

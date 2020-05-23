@@ -47,22 +47,27 @@ describe("Normal Flow", () => {
             agent.mutate(["age"], "Dan");
         }).toThrow(types_1.PermissionDeniedError);
     });
-    test("Try to make name a number", () => {
-        expect(() => {
-            agent.mutate(["name"], 101);
-        }).toThrow(types_1.ValidationError);
+  test("Try to make name a number", () => {
+    expect(() => {
+      agent.mutate(["name"], 101);
+    }).toThrow(types_1.ValidationError);
+  });
+  test("Try to add another property", () => {
+    expect(() => {
+      agent.create(["State"], "California");
+    }).toThrow(types_1.PermissionDeniedError);
+  });
+  test("Try to add deep property", () => {
+    expect(() => {
+      safebox.create(["something", "that", "doesn't", "exist"], 0);
+    }).toThrow(types_1.ValidationError);
+  });
+  test("Check final result", () => {
+    expect(agent.get()).toEqual({
+      name: "Dan",
+      age: 32,
+      children: ["Steve"]
     });
-    test("Try to add another property", () => {
-        expect(() => {
-            agent.create(["State"], "California");
-        }).toThrow(types_1.PermissionDeniedError);
-    });
-    test("Check final result", () => {
-        expect(agent.get()).toEqual({
-            name: "Dan",
-            age: 32,
-            children: ["Steve"]
-        });
-    });
+  });
 });
 //# sourceMappingURL=integration.test.js.map
