@@ -69,6 +69,12 @@ describe("Normal Flow", () => {
     }).toThrow(PermissionDeniedError);
   });
 
+  test("Try to add deep property", () => {
+    expect(() => {
+      safebox.create(["something", "that", "doesn't", "exist"], 0);
+    }).toThrow(ValidationError);
+  });
+
   test("Check final result", () => {
     expect(agent.get()).toEqual({
       name: "Dan",
