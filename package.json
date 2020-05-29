@@ -1,6 +1,6 @@
 {
   "name": "safebox",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "description": "A safe and secure server side state solution",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
