@@ -1,6 +1,6 @@
 import {ISafeboxMemory} from "../lib/isafebox_memory";
 import {Path} from "../lib/types";
-import {get, has, merge, set} from "lodash"
+import {get, has, merge, set, unset} from "lodash"
 
 export class LocalMemory implements ISafeboxMemory {
   private object: any;
@@ -19,6 +19,11 @@ export class LocalMemory implements ISafeboxMemory {
 
     set(this.object, path, value);
     return true;
+  }
+
+  delete(path: Path): boolean {
+    if (!this.doesPathExist(path)) return false;
+    return unset(this.object, path);
   }
 
   doesPathExist(path: Path): boolean {

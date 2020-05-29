@@ -4,7 +4,7 @@ import {PathPermission, PermissionType} from "./permission/path_permission";
 import {ObjectError, Path, PermissionDeniedError, ValidationError} from "./types";
 import {Permit} from "./permission/permit";
 import {Validator} from "./validation/validator";
-import {clone, unset} from "lodash";
+import {cloneDeep, unset} from "lodash";
 
 export class Safebox {
   private readonly validator: Validator;
@@ -38,6 +38,17 @@ export class Safebox {
     this.throwValidation(path, value);
 
     if (!this.memoryEngine.create(path, value)) {
+      throw new ObjectError(path);
+    }
+  }
+
+  public delete(path: Path): void {
+    path = path || [];
+    const value = cloneDeep(this.get(path.slice(0, -1)));
+    delete value[path.slice(-1)[0]]
+    this.throwValidation(path.slice(0, -1), value);
+
+    if (!this.memoryEngine.delete(path)) {
       throw new ObjectError(path);
     }
   }
@@ -77,7 +88,7 @@ export class SafeboxAgent {
     let value = this.safebox.get(path);
     const conflicts = this.permit.getConflicts(PermissionType.GET, path || [], value);
     if (conflicts.length != 0) {
-      value = clone(value);
+      value = cloneDeep(value);
       conflicts.forEach((path) => {
         unset(value, path);
       });
@@ -100,6 +111,14 @@ export class SafeboxAgent {
       throw new PermissionDeniedError(path);
     }
     this.safebox.create(path, value);
+  }
+
+  public delete(path: Path): void {
+    const conflicts = this.permit.getConflicts(PermissionType.CREATE, path, null);
+    if (conflicts.length != 0) {
+      throw new PermissionDeniedError(path);
+    }
+    this.safebox.delete(path);
   }
 
   public merge(path: Path, value: any): void {
