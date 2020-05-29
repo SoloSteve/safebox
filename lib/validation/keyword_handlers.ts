@@ -50,7 +50,8 @@ SCHEMA_KEYWORD_HANDLERS["properties"] = function (schema, pathSegment) {
 };
 
 SCHEMA_KEYWORD_HANDLERS["items"] = function (schema, pathSegment) {
-  if (Number.isInteger(parseInt(pathSegment, 10))) {
+  // Checks if pathSegment is a whole positive number
+  if (/^\d+$/.test(pathSegment)) {
     return ["items"];
   }
   return false;
