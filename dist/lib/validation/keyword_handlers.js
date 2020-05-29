@@ -11,10 +11,10 @@ exports.SCHEMA_KEYWORD_HANDLERS["properties"] = function (schema, pathSegment) {
     return false;
 };
 exports.SCHEMA_KEYWORD_HANDLERS["items"] = function (schema, pathSegment) {
-    if (Number.isInteger(parseInt(pathSegment, 10))) {
-        return ["items"];
-    }
-    return false;
+  if (/^\d+$/.test(pathSegment)) {
+    return ["items"];
+  }
+  return false;
 };
 exports.SCHEMA_KEYWORD_HANDLERS["additionalProperties"] = function (schema, pathSegment) {
     if (schema.hasOwnProperty("additionalProperties")

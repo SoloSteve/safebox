@@ -5,6 +5,8 @@ export interface ISafeboxMemory {
 
   create(path: Path, value: any): boolean;
 
+  delete(path: Path): boolean;
+
   merge(path: Path, value: any): boolean;
 
   get(path: Path): any;

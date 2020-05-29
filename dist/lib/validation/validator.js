@@ -33,7 +33,7 @@ class Validator {
       return this.validator.validate(subSchema, value);
     }
     pathToSubSchema(path) {
-        let currentSubSchema = this.schema;
+      let currentSubSchema = this.schema;
       segmentLoop: for (let pathSegment of path) {
         for (let schemaKeywordHandler of Object.values(keyword_handlers_1.SCHEMA_KEYWORD_HANDLERS)) {
           const partialSchemaPath = schemaKeywordHandler(currentSubSchema, pathSegment);
@@ -44,7 +44,7 @@ class Validator {
         }
         return false;
       }
-        return currentSubSchema;
+      return currentSubSchema;
     }
 }
 exports.Validator = Validator;

@@ -13,6 +13,9 @@ describe("Normal Flow", () => {
       age: {
         type: "number"
       },
+      hat: {
+        type: "boolean"
+      },
       children: {
         type: "array",
         items: {
@@ -20,16 +23,17 @@ describe("Normal Flow", () => {
         }
       }
     }
-  }, new LocalMemory(), {name: "Bob", age: 32, children: []});
+  }, new LocalMemory(), {name: "Bob", age: 32, hat: true, children: []});
 
   const agent = safebox.getAgent(
     new PathPermission([], PermissionType.GET, PermissionType.MUTATE),
     new PathPermission(["age"], PermissionType.GET),
+    new PathPermission(["hat"], PermissionType.CREATE, PermissionType.GET, PermissionType.MUTATE),
     new PathPermission(["children"], PermissionType.GET, PermissionType.CREATE, PermissionType.MUTATE)
   );
 
   test("Get Bob", () => {
-    expect(agent.get()).toEqual({name: "Bob", age: 32, children: []});
+    expect(agent.get()).toEqual({name: "Bob", age: 32, hat: true, children: []});
   });
 
   test("Get Bob's name", () => {
@@ -73,6 +77,19 @@ describe("Normal Flow", () => {
     expect(() => {
       safebox.create(["something", "that", "doesn't", "exist"], 0);
     }).toThrow(ValidationError);
+  });
+
+  test("Try to delete unknown object", () => {
+    expect(() => {
+      agent.delete(["children", "1"]);
+      agent.delete(["age", "quantum"]);
+    }).toThrow(ObjectError);
+  });
+
+  test("Delete age", () => {
+    expect(() => {
+      agent.delete(["hat"]);
+    }).not.toThrow();
   });
 
   test("Check final result", () => {
