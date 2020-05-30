@@ -11,7 +11,7 @@ let Permit = (() => {
         }
         addPermissions(...permissions) {
             permissions.forEach((permission) => {
-                path_utils_1.set(this.permissionTree, permission.path, { [Permit.PERMISSIONS_KEY]: permission });
+                path_utils_1.set(this.permissionTree, [...permission.path, Permit.PERMISSIONS_KEY], permission);
             });
         }
         getConflicts(permissionType, path, valueAtPath) {

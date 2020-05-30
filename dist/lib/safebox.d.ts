@@ -6,6 +6,7 @@ import {Path} from "./types";
 export declare class Safebox {
   private readonly validator;
   private readonly memoryEngine;
+  private throwValidation;
 
   constructor(schema: JSONSchema4, memoryEngine: ISafeboxMemory, defaultValue?: any);
 
@@ -20,8 +21,6 @@ export declare class Safebox {
   delete(path: Path): void;
 
   merge(path: Path, value: any): void;
-
-  private throwValidation;
 }
 
 export declare class SafeboxAgent {

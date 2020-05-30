@@ -7,15 +7,16 @@ const permit_1 = require("./permission/permit");
 const validator_1 = require("./validation/validator");
 const lodash_1 = require("lodash");
 class Safebox {
-    constructor(schema, memoryEngine, defaultValue) {
-        this.validator = new validator_1.Validator(schema);
-        this.memoryEngine = memoryEngine;
-        if (defaultValue)
-            this.create([], defaultValue);
-    }
-    getAgent(...permissions) {
-        return new SafeboxAgent(this, permissions);
-    }
+  constructor(schema, memoryEngine, defaultValue) {
+    this.validator = new validator_1.Validator(schema);
+    this.memoryEngine = memoryEngine;
+    if (defaultValue)
+      this.create([], defaultValue);
+  }
+
+  getAgent(...permissions) {
+    return new SafeboxAgent(this, permissions);
+  }
 
   get(path) {
     return this.memoryEngine.get(path || []);
@@ -69,14 +70,14 @@ class SafeboxAgent {
         this.permit = new permit_1.Permit(...permissions);
     }
     get(path) {
-        let value = this.safebox.get(path);
-        const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.GET, path || [], value);
-        if (conflicts.length != 0) {
-          value = lodash_1.cloneDeep(value);
-          conflicts.forEach((path) => {
-            lodash_1.unset(value, path);
-          });
-        }
+      let value = this.safebox.get(path);
+      const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.GET, path || [], value);
+      if (conflicts.length != 0) {
+        value = lodash_1.cloneDeep(value);
+        conflicts.forEach((path) => {
+          lodash_1.unset(value, path);
+        });
+      }
       return value;
     }
 

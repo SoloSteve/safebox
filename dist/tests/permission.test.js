@@ -29,16 +29,27 @@ describe("Permission Tree Creation", () => {
                     }
                 },
                 9: {
-                    10: {
-                        [permit_1.Permit.PERMISSIONS_KEY]: new path_permission_1.PathPermission(["1", "9", "10"]),
-                    },
-                    11: {
-                        [permit_1.Permit.PERMISSIONS_KEY]: new path_permission_1.PathPermission(["1", "9", "11"]),
-                    }
+                  10: {
+                    [permit_1.Permit.PERMISSIONS_KEY]: new path_permission_1.PathPermission(["1", "9", "10"]),
+                  },
+                  11: {
+                    [permit_1.Permit.PERMISSIONS_KEY]: new path_permission_1.PathPermission(["1", "9", "11"]),
+                  }
                 }
             }
         });
     });
+  test("Check no overrides in tree", () => {
+    const permit = new permit_1.Permit(new path_permission_1.PathPermission(["a", "b"], path_permission_1.PermissionType.MUTATE), new path_permission_1.PathPermission(["a"], path_permission_1.PermissionType.GET));
+    expect(permit.permissionTree).toEqual({
+      a: {
+        [permit_1.Permit.PERMISSIONS_KEY]: new path_permission_1.PathPermission(["a"], path_permission_1.PermissionType.GET),
+        b: {
+          [permit_1.Permit.PERMISSIONS_KEY]: new path_permission_1.PathPermission(["a", "b"], path_permission_1.PermissionType.MUTATE),
+        }
+      }
+    });
+  });
 });
 describe("Single Type Tree Permission Access", () => {
     function makeTest(first, second, third, other) {

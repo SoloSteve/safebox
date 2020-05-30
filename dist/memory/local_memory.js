@@ -47,8 +47,8 @@ class LocalMemory {
     if (!this.doesPathExist(path))
       return false;
     lodash_1.set(this.object, path, value);
-        return true;
-    }
+    return true;
+  }
 }
 exports.LocalMemory = LocalMemory;
 //# sourceMappingURL=local_memory.js.map
