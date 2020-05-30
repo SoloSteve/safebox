@@ -16,7 +16,7 @@ export class Permit {
 
   public addPermissions(...permissions: PathPermission[]) {
     permissions.forEach((permission) => {
-      set(this.permissionTree, permission.path, {[Permit.PERMISSIONS_KEY]: permission});
+      set(this.permissionTree, [...permission.path, Permit.PERMISSIONS_KEY], permission);
     })
   }
 
