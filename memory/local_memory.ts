@@ -47,4 +47,9 @@ export class LocalMemory implements ISafeboxMemory {
     set(this.object, path, value);
     return true;
   }
+
+  set(path: Path, value: any): boolean {
+    set(this.object, path, value)
+    return true;
+  }
 }

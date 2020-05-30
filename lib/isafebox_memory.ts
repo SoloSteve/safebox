@@ -11,5 +11,7 @@ export interface ISafeboxMemory {
 
   get(path: Path): any;
 
+  set(path: Path, value: any): boolean;
+
   doesPathExist(path: Path): boolean;
 }
