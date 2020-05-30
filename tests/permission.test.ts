@@ -56,6 +56,23 @@ describe("Permission Tree Creation", () => {
       }
     });
   });
+  test("Check no overrides in tree", () => {
+    const permit = new Permit(
+      new PathPermission(["a", "b"], PermissionType.MUTATE),
+      new PathPermission(["a"], PermissionType.GET)
+    );
+    // @ts-ignore
+    expect(permit.permissionTree).toEqual({
+      a: {
+        // @ts-ignore
+        [Permit.PERMISSIONS_KEY]: new PathPermission(["a"], PermissionType.GET),
+        b: {
+          // @ts-ignore
+          [Permit.PERMISSIONS_KEY]: new PathPermission(["a", "b"], PermissionType.MUTATE),
+        }
+      }
+    })
+  })
 });
 
 describe("Single Type Tree Permission Access", () => {
