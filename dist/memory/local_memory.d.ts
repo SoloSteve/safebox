@@ -17,4 +17,6 @@ export declare class LocalMemory implements ISafeboxMemory {
   merge(path: Path, value: any): boolean;
 
   mutate(path: Path, value: any): boolean;
+
+  set(path: Path, value: any): boolean;
 }

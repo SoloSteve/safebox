@@ -21,6 +21,8 @@ export declare class Safebox {
   delete(path: Path): void;
 
   merge(path: Path, value: any): void;
+
+  set(path: Path, value: any): void;
 }
 
 export declare class SafeboxAgent {
@@ -38,4 +40,6 @@ export declare class SafeboxAgent {
   delete(path: Path): void;
 
   merge(path: Path, value: any): void;
+
+  set(path: Path, value: any): void;
 }

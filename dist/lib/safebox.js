@@ -23,7 +23,6 @@ class Safebox {
   }
 
   mutate(path, value) {
-    path = path || [];
     this.throwValidation(path, value);
     if (!this.memoryEngine.mutate(path, value)) {
       throw new types_1.ObjectError(path);
@@ -31,7 +30,6 @@ class Safebox {
   }
 
   create(path, value) {
-    path = path || [];
     this.throwValidation(path, value);
     if (!this.memoryEngine.create(path, value)) {
       throw new types_1.ObjectError(path);
@@ -39,7 +37,6 @@ class Safebox {
   }
 
   delete(path) {
-    path = path || [];
     const value = lodash_1.cloneDeep(this.get(path.slice(0, -1)));
     delete value[path.slice(-1)[0]];
     this.throwValidation(path.slice(0, -1), value);
@@ -49,9 +46,15 @@ class Safebox {
   }
 
   merge(path, value) {
-    path = path || [];
     this.throwValidation(path, value);
     if (!this.memoryEngine.merge(path, value)) {
+      throw new types_1.ObjectError(path);
+    }
+  }
+
+  set(path, value) {
+    this.throwValidation(path, value);
+    if (!this.memoryEngine.set(path, value)) {
       throw new types_1.ObjectError(path);
     }
   }
@@ -98,7 +101,7 @@ class SafeboxAgent {
   }
 
   delete(path) {
-    const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.CREATE, path, null);
+    const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.DELETE, path, null);
     if (conflicts.length != 0) {
       throw new types_1.PermissionDeniedError(path);
     }
@@ -111,6 +114,14 @@ class SafeboxAgent {
       throw new types_1.PermissionDeniedError(path);
     }
     this.safebox.merge(path, value);
+  }
+
+  set(path, value) {
+    const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.SET, path, value);
+    if (conflicts.length != 0) {
+      throw new types_1.PermissionDeniedError(path);
+    }
+    this.safebox.set(path, value);
   }
 }
 exports.SafeboxAgent = SafeboxAgent;
