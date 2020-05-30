@@ -25,7 +25,6 @@ export class Safebox {
   }
 
   public mutate(path: Path, value: any): void {
-    path = path || [];
     this.throwValidation(path, value);
 
     if (!this.memoryEngine.mutate(path, value)) {
@@ -34,7 +33,6 @@ export class Safebox {
   }
 
   public create(path: Path, value: any): void {
-    path = path || [];
     this.throwValidation(path, value);
 
     if (!this.memoryEngine.create(path, value)) {
@@ -43,7 +41,6 @@ export class Safebox {
   }
 
   public delete(path: Path): void {
-    path = path || [];
     const value = cloneDeep(this.get(path.slice(0, -1)));
     delete value[path.slice(-1)[0]]
     this.throwValidation(path.slice(0, -1), value);
@@ -54,10 +51,17 @@ export class Safebox {
   }
 
   public merge(path: Path, value: any): void {
-    path = path || [];
     this.throwValidation(path, value);
 
     if (!this.memoryEngine.merge(path, value)) {
+      throw new ObjectError(path);
+    }
+  }
+
+  public set(path: Path, value: any): void {
+    this.throwValidation(path, value);
+
+    if (!this.memoryEngine.set(path, value)) {
       throw new ObjectError(path);
     }
   }
@@ -114,7 +118,7 @@ export class SafeboxAgent {
   }
 
   public delete(path: Path): void {
-    const conflicts = this.permit.getConflicts(PermissionType.CREATE, path, null);
+    const conflicts = this.permit.getConflicts(PermissionType.DELETE, path, null);
     if (conflicts.length != 0) {
       throw new PermissionDeniedError(path);
     }
@@ -127,5 +131,13 @@ export class SafeboxAgent {
       throw new PermissionDeniedError(path);
     }
     this.safebox.merge(path, value);
+  }
+
+  public set(path: Path, value: any): void {
+    const conflicts = this.permit.getConflicts(PermissionType.SET, path, value);
+    if (conflicts.length != 0) {
+      throw new PermissionDeniedError(path);
+    }
+    this.safebox.set(path, value);
   }
 }
