@@ -14,9 +14,7 @@ exports.PathPermission = PathPermission;
 var PermissionType;
 (function (PermissionType) {
   PermissionType[PermissionType["GET"] = 0] = "GET";
-  PermissionType[PermissionType["MUTATE"] = 1] = "MUTATE";
-  PermissionType[PermissionType["CREATE"] = 2] = "CREATE";
-  PermissionType[PermissionType["SET"] = 3] = "SET";
-  PermissionType[PermissionType["DELETE"] = 4] = "DELETE";
+  PermissionType[PermissionType["SET"] = 1] = "SET";
+  PermissionType[PermissionType["DELETE"] = 2] = "DELETE";
 })(PermissionType = exports.PermissionType || (exports.PermissionType = {}));
 //# sourceMappingURL=path_permission.js.map

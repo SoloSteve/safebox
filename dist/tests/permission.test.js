@@ -40,12 +40,12 @@ describe("Permission Tree Creation", () => {
         });
     });
   test("Check no overrides in tree", () => {
-    const permit = new permit_1.Permit(new path_permission_1.PathPermission(["a", "b"], path_permission_1.PermissionType.MUTATE), new path_permission_1.PathPermission(["a"], path_permission_1.PermissionType.GET));
+    const permit = new permit_1.Permit(new path_permission_1.PathPermission(["a", "b"], path_permission_1.PermissionType.SET), new path_permission_1.PathPermission(["a"], path_permission_1.PermissionType.GET));
     expect(permit.permissionTree).toEqual({
       a: {
         [permit_1.Permit.PERMISSIONS_KEY]: new path_permission_1.PathPermission(["a"], path_permission_1.PermissionType.GET),
         b: {
-          [permit_1.Permit.PERMISSIONS_KEY]: new path_permission_1.PathPermission(["a", "b"], path_permission_1.PermissionType.MUTATE),
+          [permit_1.Permit.PERMISSIONS_KEY]: new path_permission_1.PathPermission(["a", "b"], path_permission_1.PermissionType.SET),
         }
       }
     });
@@ -116,18 +116,19 @@ describe("Single Type Tree Permission Access", () => {
                     problems.push(["1", "2"]);
                 return problems.sort();
             })());
-            expect(permit.getConflicts(other, ["1"], {
-                2: true,
-                3: {
-                    x: true,
-                    y: true,
-                },
-            }).sort()).toEqual([["1", "3", "x"], ["1", "3", "y"], ["1", "2"]].sort());
+          expect(permit.getConflicts(other, ["1"], {
+            2: true,
+            3: {
+              x: true,
+              y: true,
+            },
+          }).sort()).toEqual([["1", "3", "x"], ["1", "3", "y"], ["1", "2"]].sort());
         });
     }
-    makeTest(path_permission_1.PermissionType.MUTATE, path_permission_1.PermissionType.MUTATE, path_permission_1.PermissionType.MUTATE, path_permission_1.PermissionType.CREATE);
-    makeTest(path_permission_1.PermissionType.MUTATE, path_permission_1.PermissionType.CREATE, path_permission_1.PermissionType.MUTATE, path_permission_1.PermissionType.GET);
-    makeTest(path_permission_1.PermissionType.CREATE, path_permission_1.PermissionType.MUTATE, path_permission_1.PermissionType.MUTATE, path_permission_1.PermissionType.GET);
+
+  makeTest(path_permission_1.PermissionType.SET, path_permission_1.PermissionType.SET, path_permission_1.PermissionType.SET, path_permission_1.PermissionType.DELETE);
+  makeTest(path_permission_1.PermissionType.SET, path_permission_1.PermissionType.DELETE, path_permission_1.PermissionType.SET, path_permission_1.PermissionType.GET);
+  makeTest(path_permission_1.PermissionType.DELETE, path_permission_1.PermissionType.SET, path_permission_1.PermissionType.SET, path_permission_1.PermissionType.GET);
 });
 describe("Integration Test", () => {
     const permit = new permit_1.Permit();

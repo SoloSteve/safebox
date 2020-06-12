@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Permit = void 0;
-const path_utils_1 = require("../path_utils");
+const utils_1 = require("../utils");
 const traverse = require("traverse");
 let Permit = (() => {
     class Permit {
@@ -11,7 +11,7 @@ let Permit = (() => {
         }
         addPermissions(...permissions) {
             permissions.forEach((permission) => {
-                path_utils_1.set(this.permissionTree, [...permission.path, Permit.PERMISSIONS_KEY], permission);
+              utils_1.set(this.permissionTree, [...permission.path, Permit.PERMISSIONS_KEY], permission);
             });
         }
         getConflicts(permissionType, path, valueAtPath) {

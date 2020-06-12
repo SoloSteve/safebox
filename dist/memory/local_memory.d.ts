@@ -6,8 +6,6 @@ export declare class LocalMemory implements ISafeboxMemory {
 
   constructor();
 
-  create(path: Path, value: any): boolean;
-
   delete(path: Path): boolean;
 
   doesPathExist(path: Path): boolean;
@@ -15,8 +13,6 @@ export declare class LocalMemory implements ISafeboxMemory {
   get(path: Path): any;
 
   merge(path: Path, value: any): boolean;
-
-  mutate(path: Path, value: any): boolean;
 
   set(path: Path, value: any): boolean;
 }

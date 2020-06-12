@@ -11,8 +11,6 @@ export declare class PathPermission {
 
 export declare enum PermissionType {
   GET = 0,
-  MUTATE = 1,
-  CREATE = 2,
-  SET = 3,
-  DELETE = 4
+  SET = 1,
+  DELETE = 2
 }

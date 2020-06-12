@@ -6,12 +6,14 @@ const types_1 = require("./types");
 const permit_1 = require("./permission/permit");
 const validator_1 = require("./validation/validator");
 const lodash_1 = require("lodash");
+const utils_1 = require("./utils");
+
 class Safebox {
   constructor(schema, memoryEngine, defaultValue) {
     this.validator = new validator_1.Validator(schema);
     this.memoryEngine = memoryEngine;
     if (defaultValue)
-      this.create([], defaultValue);
+      this.set([], defaultValue);
   }
 
   getAgent(...permissions) {
@@ -20,20 +22,6 @@ class Safebox {
 
   get(path) {
     return this.memoryEngine.get(path || []);
-  }
-
-  mutate(path, value) {
-    this.throwValidation(path, value);
-    if (!this.memoryEngine.mutate(path, value)) {
-      throw new types_1.ObjectError(path);
-    }
-  }
-
-  create(path, value) {
-    this.throwValidation(path, value);
-    if (!this.memoryEngine.create(path, value)) {
-      throw new types_1.ObjectError(path);
-    }
   }
 
   delete(path) {
@@ -60,7 +48,9 @@ class Safebox {
   }
 
   throwValidation(path, value) {
-    const isValid = this.validator.isValid(path, value);
+    const currentValue = lodash_1.cloneDeep(this.get(path));
+    const mergedValue = utils_1.merge(currentValue, value);
+    const isValid = this.validator.isValid(path, mergedValue);
     if (!isValid) {
       throw new types_1.ValidationError(path);
     }
@@ -84,22 +74,6 @@ class SafeboxAgent {
       return value;
     }
 
-  mutate(path, value) {
-    const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.MUTATE, path, value);
-    if (conflicts.length != 0) {
-      throw new types_1.PermissionDeniedError(path);
-    }
-    this.safebox.mutate(path, value);
-  }
-
-  create(path, value) {
-    const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.CREATE, path, value);
-    if (conflicts.length != 0) {
-      throw new types_1.PermissionDeniedError(path);
-    }
-    this.safebox.create(path, value);
-  }
-
   delete(path) {
     const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.DELETE, path, null);
     if (conflicts.length != 0) {
@@ -109,7 +83,7 @@ class SafeboxAgent {
   }
 
   merge(path, value) {
-    const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.MUTATE, path, value);
+    const conflicts = this.permit.getConflicts(path_permission_1.PermissionType.SET, path, value);
     if (conflicts.length != 0) {
       throw new types_1.PermissionDeniedError(path);
     }

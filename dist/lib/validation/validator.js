@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Validator = void 0;
 const Ajv = require("ajv");
 const keyword_handlers_1 = require("./keyword_handlers");
-const path_utils_1 = require("../path_utils");
+const utils_1 = require("../utils");
 const traverse = require("json-schema-traverse");
 const PARENT_KEYWORD_INDEX = 4;
 class Validator {
@@ -38,7 +38,7 @@ class Validator {
         for (let schemaKeywordHandler of Object.values(keyword_handlers_1.SCHEMA_KEYWORD_HANDLERS)) {
           const partialSchemaPath = schemaKeywordHandler(currentSubSchema, pathSegment);
           if (partialSchemaPath !== false) {
-            currentSubSchema = path_utils_1.get(currentSubSchema, partialSchemaPath);
+            currentSubSchema = utils_1.get(currentSubSchema, partialSchemaPath);
             continue segmentLoop;
           }
         }

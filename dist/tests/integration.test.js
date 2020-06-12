@@ -25,7 +25,7 @@ describe("Normal Flow", () => {
           }
         }
     }, new local_memory_1.LocalMemory(), {name: "Bob", age: 32, hat: true, children: []});
-  const agent = safebox.getAgent(new path_permission_1.PathPermission([], path_permission_1.PermissionType.GET, path_permission_1.PermissionType.MUTATE), new path_permission_1.PathPermission(["age"], path_permission_1.PermissionType.GET), new path_permission_1.PathPermission(["hat"], path_permission_1.PermissionType.CREATE, path_permission_1.PermissionType.GET, path_permission_1.PermissionType.MUTATE), new path_permission_1.PathPermission(["children"], path_permission_1.PermissionType.GET, path_permission_1.PermissionType.CREATE, path_permission_1.PermissionType.MUTATE));
+  const agent = safebox.getAgent(new path_permission_1.PathPermission([], path_permission_1.PermissionType.GET, path_permission_1.PermissionType.SET), new path_permission_1.PathPermission(["age"], path_permission_1.PermissionType.GET), new path_permission_1.PathPermission(["hat"], path_permission_1.PermissionType.SET, path_permission_1.PermissionType.GET, path_permission_1.PermissionType.DELETE), new path_permission_1.PathPermission(["children"], path_permission_1.PermissionType.GET, path_permission_1.PermissionType.SET, path_permission_1.PermissionType.DELETE));
   test("Get Bob", () => {
     expect(agent.get()).toEqual({name: "Bob", age: 32, hat: true, children: []});
   });
@@ -34,35 +34,35 @@ describe("Normal Flow", () => {
   });
   test("Add child to Bob", () => {
     expect(() => {
-      agent.create(["children", "0"], "Steve");
+      agent.set(["children", "0"], "Steve");
     }).not.toThrow();
   });
   test("Try to add another first child", () => {
     expect(() => {
-      agent.create(["children", "0"], "Stephen");
-    }).toThrow(types_1.ObjectError);
+      agent.set(["children", "0"], "Stephen");
+    }).not.toThrow();
   });
   test("Try to mutate Bob's properties", () => {
     expect(() => {
-      agent.mutate(["name"], "Dan");
+      agent.merge(["name"], "Dan");
     }).not.toThrow();
     expect(() => {
-      agent.mutate(["age"], "Dan");
+      agent.set(["age"], "Dan");
     }).toThrow(types_1.PermissionDeniedError);
   });
   test("Try to make name a number", () => {
     expect(() => {
-      agent.mutate(["name"], 101);
+      agent.set(["name"], 101);
     }).toThrow(types_1.ValidationError);
   });
   test("Try to add another property", () => {
     expect(() => {
-      agent.create(["State"], "California");
-    }).toThrow(types_1.PermissionDeniedError);
+      agent.set(["State"], "California");
+    }).toThrow(types_1.ValidationError);
   });
   test("Try to add deep property", () => {
     expect(() => {
-      safebox.create(["something", "that", "doesn't", "exist"], 0);
+      safebox.set(["something", "that", "doesn't", "exist"], 0);
     }).toThrow(types_1.ValidationError);
   });
   test("Try to delete unknown object", () => {
@@ -71,7 +71,7 @@ describe("Normal Flow", () => {
       agent.delete(["age", "quantum"]);
     }).toThrow(types_1.ObjectError);
   });
-  test("Delete age", () => {
+  test("Delete hat", () => {
     expect(() => {
       agent.delete(["hat"]);
     }).not.toThrow();
@@ -80,7 +80,7 @@ describe("Normal Flow", () => {
     expect(agent.get()).toEqual({
       name: "Dan",
       age: 32,
-      children: ["Steve"]
+      children: ["Stephen"]
     });
   });
 });

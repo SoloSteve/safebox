@@ -2,20 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocalMemory = void 0;
 const lodash_1 = require("lodash");
+const utils_1 = require("../lib/utils");
+
 class LocalMemory {
   constructor() {
     this.object = {};
-  }
-
-  create(path, value) {
-    if (path.length == 0) {
-      this.object = value;
-      return true;
-    }
-    if (!this.doesPathExist(path.slice(0, -1)) || this.doesPathExist(path))
-      return false;
-    lodash_1.set(this.object, path, value);
-    return true;
   }
 
   delete(path) {
@@ -39,19 +30,18 @@ class LocalMemory {
   merge(path, value) {
     if (!this.doesPathExist(path))
       return false;
-    lodash_1.merge(this.get(path), value);
-    return true;
-  }
-
-  mutate(path, value) {
-    if (!this.doesPathExist(path))
-      return false;
-    lodash_1.set(this.object, path, value);
+    const currentValue = this.get(path);
+    value = utils_1.merge(currentValue, value);
+    this.set(path, value);
     return true;
   }
 
   set(path, value) {
-    lodash_1.set(this.object, path, value);
+    if (path.length == 0) {
+      this.object = value;
+      return true;
+    }
+    utils_1.set(this.object, path, value);
     return true;
   }
 }

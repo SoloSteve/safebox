@@ -14,10 +14,6 @@ export declare class Safebox {
 
   get(path?: Path): any;
 
-  mutate(path: Path, value: any): void;
-
-  create(path: Path, value: any): void;
-
   delete(path: Path): void;
 
   merge(path: Path, value: any): void;
@@ -32,10 +28,6 @@ export declare class SafeboxAgent {
   constructor(safebox: Safebox, permissions: PathPermission[]);
 
   get(path?: Path): any;
-
-  mutate(path: Path, value: any): void;
-
-  create(path: Path, value: any): void;
 
   delete(path: Path): void;
 
