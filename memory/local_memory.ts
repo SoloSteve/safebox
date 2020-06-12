@@ -1,24 +1,13 @@
 import {ISafeboxMemory} from "../lib/isafebox_memory";
 import {Path} from "../lib/types";
-import {get, has, merge, set, unset} from "lodash"
+import {get, has, unset} from "lodash"
+import {merge, set} from "../lib/utils";
 
 export class LocalMemory implements ISafeboxMemory {
   private object: any;
 
   constructor() {
     this.object = {};
-  }
-
-  create(path: Path, value: any): boolean {
-    if (path.length == 0) {
-      this.object = value;
-      return true;
-    }
-
-    if (!this.doesPathExist(path.slice(0, -1)) || this.doesPathExist(path)) return false;
-
-    set(this.object, path, value);
-    return true;
   }
 
   delete(path: Path): boolean {
@@ -38,17 +27,17 @@ export class LocalMemory implements ISafeboxMemory {
 
   merge(path: Path, value: any): boolean {
     if (!this.doesPathExist(path)) return false;
-    merge(this.get(path), value);
-    return true;
-  }
-
-  mutate(path: Path, value: any): boolean {
-    if (!this.doesPathExist(path)) return false;
-    set(this.object, path, value);
+    const currentValue = this.get(path);
+    value = merge(currentValue, value);
+    this.set(path, value);
     return true;
   }
 
   set(path: Path, value: any): boolean {
+    if (path.length == 0) {
+      this.object = value;
+      return true;
+    }
     set(this.object, path, value)
     return true;
   }

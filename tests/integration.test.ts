@@ -26,10 +26,10 @@ describe("Normal Flow", () => {
   }, new LocalMemory(), {name: "Bob", age: 32, hat: true, children: []});
 
   const agent = safebox.getAgent(
-    new PathPermission([], PermissionType.GET, PermissionType.MUTATE),
+    new PathPermission([], PermissionType.GET, PermissionType.SET),
     new PathPermission(["age"], PermissionType.GET),
-    new PathPermission(["hat"], PermissionType.CREATE, PermissionType.GET, PermissionType.MUTATE),
-    new PathPermission(["children"], PermissionType.GET, PermissionType.CREATE, PermissionType.MUTATE)
+    new PathPermission(["hat"], PermissionType.SET, PermissionType.GET, PermissionType.DELETE),
+    new PathPermission(["children"], PermissionType.GET, PermissionType.SET, PermissionType.DELETE)
   );
 
   test("Get Bob", () => {
@@ -42,40 +42,40 @@ describe("Normal Flow", () => {
 
   test("Add child to Bob", () => {
     expect(() => {
-      agent.create(["children", "0"], "Steve")
+      agent.set(["children", "0"], "Steve")
     }).not.toThrow();
   });
 
   test("Try to add another first child", () => {
     expect(() => {
-      agent.create(["children", "0"], "Stephen")
-    }).toThrow(ObjectError);
+      agent.set(["children", "0"], "Stephen")
+    }).not.toThrow();
   });
 
   test("Try to mutate Bob's properties", () => {
     expect(() => {
-      agent.mutate(["name"], "Dan")
+      agent.merge(["name"], "Dan");
     }).not.toThrow();
     expect(() => {
-      agent.mutate(["age"], "Dan")
+      agent.set(["age"], "Dan")
     }).toThrow(PermissionDeniedError);
   });
 
   test("Try to make name a number", () => {
     expect(() => {
-      agent.mutate(["name"], 101)
+      agent.set(["name"], 101)
     }).toThrow(ValidationError);
   });
 
   test("Try to add another property", () => {
     expect(() => {
-      agent.create(["State"], "California")
-    }).toThrow(PermissionDeniedError);
+      agent.set(["State"], "California")
+    }).toThrow(ValidationError);
   });
 
   test("Try to add deep property", () => {
     expect(() => {
-      safebox.create(["something", "that", "doesn't", "exist"], 0);
+      safebox.set(["something", "that", "doesn't", "exist"], 0);
     }).toThrow(ValidationError);
   });
 
@@ -86,7 +86,7 @@ describe("Normal Flow", () => {
     }).toThrow(ObjectError);
   });
 
-  test("Delete age", () => {
+  test("Delete hat", () => {
     expect(() => {
       agent.delete(["hat"]);
     }).not.toThrow();
@@ -96,7 +96,7 @@ describe("Normal Flow", () => {
     expect(agent.get()).toEqual({
       name: "Dan",
       age: 32,
-      children: ["Steve"]
+      children: ["Stephen"]
     })
   });
 });

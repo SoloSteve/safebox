@@ -1,4 +1,4 @@
-import {get as _get, setWith as _setWith} from "lodash";
+import {get as _get, isObjectLike, merge as _merge, setWith as _setWith} from "lodash";
 import {Path} from "./types";
 
 export function get(obj: any, path: Path, defaultValue?: any) {
@@ -14,5 +14,16 @@ export function set(obj: any, path: Path, value: any) {
     Object.assign(obj, value);
   } else {
     _setWith(obj, path, value, Object);
+  }
+}
+
+/**
+ * Returns the merged object or value
+ */
+export function merge(source: any, addition: any): any {
+  if (isObjectLike(addition) && isObjectLike(source)) {
+    return _merge(source, addition);
+  } else {
+    return addition;
   }
 }

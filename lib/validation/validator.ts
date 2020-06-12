@@ -2,7 +2,7 @@ import {JSONSchema4} from "json-schema";
 import * as Ajv from "ajv";
 import {Path} from "../types";
 import {SCHEMA_KEYWORD_HANDLERS} from "./keyword_handlers";
-import {get} from "../path_utils";
+import {get} from "../utils";
 
 const traverse = require("json-schema-traverse");
 const PARENT_KEYWORD_INDEX = 4;

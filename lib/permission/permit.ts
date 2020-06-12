@@ -1,5 +1,5 @@
 import {PathPermission, PermissionType} from "./path_permission";
-import {set} from "../path_utils";
+import {set} from "../utils";
 import {Path} from "../types";
 import traverse = require("traverse");
 
