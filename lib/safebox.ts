@@ -5,6 +5,7 @@ import {ObjectError, Path, PermissionDeniedError, ValidationError} from "./types
 import {Permit} from "./permission/permit";
 import {Validator} from "./validation/validator";
 import {cloneDeep, unset} from "lodash";
+import {merge} from "./utils";
 
 export class Safebox {
   private readonly validator: Validator;
@@ -13,7 +14,7 @@ export class Safebox {
   constructor(schema: JSONSchema4, memoryEngine: ISafeboxMemory, defaultValue?: any) {
     this.validator = new Validator(schema);
     this.memoryEngine = memoryEngine;
-    if (defaultValue) this.create([], defaultValue);
+    if (defaultValue) this.set([], defaultValue);
   }
 
   public getAgent(...permissions: PathPermission[]): SafeboxAgent {
@@ -22,22 +23,6 @@ export class Safebox {
 
   public get(path?: Path): any {
     return this.memoryEngine.get(path || []);
-  }
-
-  public mutate(path: Path, value: any): void {
-    this.throwValidation(path, value);
-
-    if (!this.memoryEngine.mutate(path, value)) {
-      throw new ObjectError(path);
-    }
-  }
-
-  public create(path: Path, value: any): void {
-    this.throwValidation(path, value);
-
-    if (!this.memoryEngine.create(path, value)) {
-      throw new ObjectError(path);
-    }
   }
 
   public delete(path: Path): void {
@@ -71,7 +56,9 @@ export class Safebox {
    * @throws ValidationError
    */
   private throwValidation(path: Path, value: any): void {
-    const isValid = this.validator.isValid(path, value);
+    const currentValue = cloneDeep(this.get(path));
+    const mergedValue = merge(currentValue, value)
+    const isValid = this.validator.isValid(path, mergedValue);
     if (!isValid) {
       throw new ValidationError(path);
     }
@@ -101,22 +88,6 @@ export class SafeboxAgent {
     return value;
   }
 
-  public mutate(path: Path, value: any): void {
-    const conflicts = this.permit.getConflicts(PermissionType.MUTATE, path, value);
-    if (conflicts.length != 0) {
-      throw new PermissionDeniedError(path);
-    }
-    this.safebox.mutate(path, value);
-  }
-
-  public create(path: Path, value: any): void {
-    const conflicts = this.permit.getConflicts(PermissionType.CREATE, path, value);
-    if (conflicts.length != 0) {
-      throw new PermissionDeniedError(path);
-    }
-    this.safebox.create(path, value);
-  }
-
   public delete(path: Path): void {
     const conflicts = this.permit.getConflicts(PermissionType.DELETE, path, null);
     if (conflicts.length != 0) {
@@ -126,7 +97,7 @@ export class SafeboxAgent {
   }
 
   public merge(path: Path, value: any): void {
-    const conflicts = this.permit.getConflicts(PermissionType.MUTATE, path, value);
+    const conflicts = this.permit.getConflicts(PermissionType.SET, path, value);
     if (conflicts.length != 0) {
       throw new PermissionDeniedError(path);
     }

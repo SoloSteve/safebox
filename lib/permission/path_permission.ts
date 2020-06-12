@@ -16,8 +16,6 @@ export class PathPermission {
 
 export enum PermissionType {
   GET,
-  MUTATE,
-  CREATE,
   SET,
   DELETE
 }

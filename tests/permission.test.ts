@@ -58,7 +58,7 @@ describe("Permission Tree Creation", () => {
   });
   test("Check no overrides in tree", () => {
     const permit = new Permit(
-      new PathPermission(["a", "b"], PermissionType.MUTATE),
+      new PathPermission(["a", "b"], PermissionType.SET),
       new PathPermission(["a"], PermissionType.GET)
     );
     // @ts-ignore
@@ -68,7 +68,7 @@ describe("Permission Tree Creation", () => {
         [Permit.PERMISSIONS_KEY]: new PathPermission(["a"], PermissionType.GET),
         b: {
           // @ts-ignore
-          [Permit.PERMISSIONS_KEY]: new PathPermission(["a", "b"], PermissionType.MUTATE),
+          [Permit.PERMISSIONS_KEY]: new PathPermission(["a", "b"], PermissionType.SET),
         }
       }
     })
@@ -179,9 +179,9 @@ describe("Single Type Tree Permission Access", () => {
     });
   }
 
-  makeTest(PermissionType.MUTATE, PermissionType.MUTATE, PermissionType.MUTATE, PermissionType.CREATE);
-  makeTest(PermissionType.MUTATE, PermissionType.CREATE, PermissionType.MUTATE, PermissionType.GET);
-  makeTest(PermissionType.CREATE, PermissionType.MUTATE, PermissionType.MUTATE, PermissionType.GET);
+  makeTest(PermissionType.SET, PermissionType.SET, PermissionType.SET, PermissionType.DELETE);
+  makeTest(PermissionType.SET, PermissionType.DELETE, PermissionType.SET, PermissionType.GET);
+  makeTest(PermissionType.DELETE, PermissionType.SET, PermissionType.SET, PermissionType.GET);
 });
 
 describe("Integration Test", () => {

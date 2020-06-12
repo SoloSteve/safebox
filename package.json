@@ -33,8 +33,10 @@
   },
   "dependencies": {
     "ajv": "latest",
+    "deepmerge": "^4.2.2",
     "json-schema-traverse": "latest",
     "lodash": "latest",
+    "merge": "^1.2.1",
     "traverse": "^0.6.6"
   }
 }
