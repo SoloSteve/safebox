@@ -5,8 +5,9 @@ export declare class BaseSafeboxError extends Error {
 
 export declare class ValidationError extends BaseSafeboxError {
   readonly path: Path;
+  readonly errors: any;
 
-  constructor(path: Path, ...params: any);
+  constructor(path: Path, errors: any, ...params: any);
 }
 
 export declare class PermissionDeniedError extends BaseSafeboxError {

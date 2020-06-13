@@ -11,13 +11,14 @@ class BaseSafeboxError extends Error {
 exports.BaseSafeboxError = BaseSafeboxError;
 
 class ValidationError extends BaseSafeboxError {
-  constructor(path, ...params) {
+  constructor(path, errors, ...params) {
     super(...params);
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ValidationError);
     }
     this.name = "ValidationError";
     this.path = path;
+    this.errors = errors;
   }
 }
 exports.ValidationError = ValidationError;

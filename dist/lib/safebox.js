@@ -7,7 +7,6 @@ const permit_1 = require("./permission/permit");
 const validator_1 = require("./validation/validator");
 const lodash_1 = require("lodash");
 const utils_1 = require("./utils");
-
 class Safebox {
   constructor(schema, memoryEngine, defaultValue) {
     this.validator = new validator_1.Validator(schema);
@@ -52,7 +51,7 @@ class Safebox {
     const mergedValue = utils_1.merge(currentValue, value);
     const isValid = this.validator.isValid(path, mergedValue);
     if (!isValid) {
-      throw new types_1.ValidationError(path);
+      throw new types_1.ValidationError(path, this.validator.errors);
     }
   }
 }

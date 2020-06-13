@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocalMemory = void 0;
 const lodash_1 = require("lodash");
 const utils_1 = require("../lib/utils");
-
 class LocalMemory {
   constructor() {
     this.object = {};
