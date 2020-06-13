@@ -1,4 +1,4 @@
-import {get as _get, isObjectLike, merge as _merge, setWith as _setWith} from "lodash";
+import {cloneDeep, get as _get, isObjectLike, merge as _merge, setWith as _setWith} from "lodash";
 import {Path} from "./types";
 
 export function get(obj: any, path: Path, defaultValue?: any) {
@@ -22,6 +22,7 @@ export function set(obj: any, path: Path, value: any) {
  */
 export function merge(source: any, addition: any): any {
   if (isObjectLike(addition) && isObjectLike(source)) {
+    source = cloneDeep(source);
     return _merge(source, addition);
   } else {
     return addition;
