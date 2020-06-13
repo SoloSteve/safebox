@@ -60,7 +60,7 @@ export class Safebox {
     const mergedValue = merge(currentValue, value)
     const isValid = this.validator.isValid(path, mergedValue);
     if (!isValid) {
-      throw new ValidationError(path);
+      throw new ValidationError(path, this.validator.errors);
     }
   }
 
