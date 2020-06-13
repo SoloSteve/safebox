@@ -53,6 +53,10 @@ export class Validator {
     return <boolean>this.validator.validate(subSchema, value);
   }
 
+  public get errors(): any {
+    return this.validator.errors;
+  }
+
   /**
    * Takes an object access path and returns the sub-schema that would be used to validate it.
    *

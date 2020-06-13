@@ -22,6 +22,9 @@ describe("Normal Flow", () => {
           type: "string"
         }
       }
+    },
+    additionalProperties: {
+      type: "boolean"
     }
   }, new LocalMemory(), {name: "Bob", age: 32, hat: true, children: []});
 
@@ -86,6 +89,12 @@ describe("Normal Flow", () => {
     }).toThrow(ObjectError);
   });
 
+  test("Add an additional property", () => {
+    expect(() => {
+      safebox.set(["loved"], true);
+    }).not.toThrow();
+  });
+
   test("Delete hat", () => {
     expect(() => {
       agent.delete(["hat"]);
@@ -96,7 +105,8 @@ describe("Normal Flow", () => {
     expect(agent.get()).toEqual({
       name: "Dan",
       age: 32,
-      children: ["Stephen"]
+      children: ["Stephen"],
+      loved: true
     })
   });
 });

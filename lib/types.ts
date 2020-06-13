@@ -6,8 +6,9 @@ export class BaseSafeboxError extends Error {
 
 export class ValidationError extends BaseSafeboxError {
   public readonly path: Path;
+  public readonly errors: any;
 
-  constructor(path: Path, ...params: any) {
+  constructor(path: Path, errors: any, ...params: any) {
     // Pass remaining arguments (including vendor specific ones) to parent constructor
     super(...params);
 
@@ -18,6 +19,7 @@ export class ValidationError extends BaseSafeboxError {
 
     this.name = "ValidationError";
     this.path = path;
+    this.errors = errors;
   }
 }
 
