@@ -5,29 +5,29 @@ const local_memory_1 = require("../memory/local_memory");
 const path_permission_1 = require("../lib/permission/path_permission");
 const types_1 = require("../lib/types");
 describe("Normal Flow", () => {
-    const safebox = new safebox_1.Safebox({
-      type: "object",
-      properties: {
-        name: {
-          type: "string"
-        },
-        age: {
-          type: "number"
-        },
-        hat: {
-          type: "boolean"
-        },
-        children: {
-          type: "array",
-          items: {
-            type: "string"
-          }
-        }
+  const safebox = new safebox_1.Safebox({
+    type: "object",
+    properties: {
+      name: {
+        type: "string"
       },
-      additionalProperties: {
+      age: {
+        type: "number"
+      },
+      hat: {
         type: "boolean"
+      },
+      children: {
+        type: "array",
+        items: {
+          type: "string"
+        }
       }
-    }, new local_memory_1.LocalMemory(), {name: "Bob", age: 32, hat: true, children: []});
+    },
+    additionalProperties: {
+      type: "boolean"
+    }
+  }, new local_memory_1.LocalMemory(), {name: "Bob", age: 32, hat: true, children: []});
   const agent = safebox.getAgent(new path_permission_1.PathPermission([], path_permission_1.PermissionType.GET, path_permission_1.PermissionType.SET), new path_permission_1.PathPermission(["age"], path_permission_1.PermissionType.GET), new path_permission_1.PathPermission(["hat"], path_permission_1.PermissionType.SET, path_permission_1.PermissionType.GET, path_permission_1.PermissionType.DELETE), new path_permission_1.PathPermission(["children"], path_permission_1.PermissionType.GET, path_permission_1.PermissionType.SET, path_permission_1.PermissionType.DELETE));
   test("Get Bob", () => {
     expect(agent.get()).toEqual({name: "Bob", age: 32, hat: true, children: []});

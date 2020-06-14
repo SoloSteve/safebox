@@ -4,14 +4,13 @@ import {Path} from "../types";
 export declare class Validator {
   private readonly validator;
   private readonly schema;
+  private pathToSubSchema;
 
   constructor(schema: JSONSchema4);
 
   get pathValidationSupport(): boolean;
 
-  isValid(path: Path, value: any): boolean;
-
   get errors(): any;
 
-  private pathToSubSchema;
+  isValid(path: Path, value: any): boolean;
 }

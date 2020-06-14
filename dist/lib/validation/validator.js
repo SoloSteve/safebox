@@ -7,14 +7,14 @@ const utils_1 = require("../utils");
 const traverse = require("json-schema-traverse");
 const PARENT_KEYWORD_INDEX = 4;
 class Validator {
-    constructor(schema) {
-        this.validator = new Ajv({});
-        this.validator = new Ajv({});
-        this.validator.addSchema(schema);
-        this.schema = schema;
-        if (!this.pathValidationSupport)
-            throw new Error("This schema is unsupported at this time");
-    }
+  constructor(schema) {
+    this.validator = new Ajv({});
+    this.validator = new Ajv({});
+    this.validator.addSchema(schema);
+    this.schema = schema;
+    if (!this.pathValidationSupport)
+      throw new Error("This schema is unsupported at this time");
+  }
 
   get pathValidationSupport() {
     let isSupported = true;

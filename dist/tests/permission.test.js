@@ -105,7 +105,7 @@ describe("Single Type Tree Permission Access", () => {
                 x: true
             }).sort()).toEqual([["1", "x"], ["1", "2"], ["1", "3"]].sort());
             expect(permit.getConflicts(third, ["1"], {
-                2: true,
+              2: true,
               3: {
                 x: true,
                 y: true,
