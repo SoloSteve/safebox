@@ -14,7 +14,7 @@ export class Safebox {
   constructor(schema: JSONSchema4, memoryEngine: ISafeboxMemory, defaultValue?: any) {
     this.validator = new Validator(schema);
     this.memoryEngine = memoryEngine;
-    if (defaultValue) this.set([], defaultValue);
+    if (defaultValue) this.set([], cloneDeep(defaultValue));
   }
 
   public getAgent(...permissions: PathPermission[]): SafeboxAgent {
