@@ -12,7 +12,7 @@ class Safebox {
     this.validator = new validator_1.Validator(schema);
     this.memoryEngine = memoryEngine;
     if (defaultValue)
-      this.set([], defaultValue);
+      this.set([], lodash_1.cloneDeep(defaultValue));
   }
 
   getAgent(...permissions) {
