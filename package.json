@@ -12,7 +12,6 @@
     "type": "git",
     "url": "git+ssh://git@bitbucket.org/stevecode/safebox.git"
   },
-  "author": "Sivan Shani",
   "license": "ISC",
   "homepage": "https://bitbucket.org/stevecode/safebox#readme",
   "devDependencies": {
